@@ -28,4 +28,3 @@ hs_err_pid*
 
 # build
 target/
-src/main/resources/static
