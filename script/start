@@ -4,4 +4,4 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-java -jar target/hms-0.0.1-SNAPSHOT.jar
+mvn spring-boot:run
