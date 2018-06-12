@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class UserService {
+public class UserService {  // TODO Replace this with interface and UserServiceImpl
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
