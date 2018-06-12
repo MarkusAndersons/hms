@@ -1,11 +1,11 @@
 package com.markusandersons.hms.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Collection;
 import java.util.UUID;
 
 @Entity
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue
@@ -14,6 +14,8 @@ public class User {
     private String surname;
     private String phone;
     private String email;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Collection<Ownership> ownership;
 
     public User() {
     }
@@ -60,5 +62,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Collection<Ownership> getOwnership() {
+        return ownership;
+    }
+
+    public void setOwnership(Collection<Ownership> ownership) {
+        this.ownership = ownership;
     }
 }

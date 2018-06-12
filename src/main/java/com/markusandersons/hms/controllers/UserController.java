@@ -1,7 +1,6 @@
 package com.markusandersons.hms.controllers;
 
 import com.markusandersons.hms.models.User;
-import com.markusandersons.hms.repositories.UserRepository;
 import com.markusandersons.hms.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

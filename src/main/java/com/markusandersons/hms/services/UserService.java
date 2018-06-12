@@ -46,6 +46,8 @@ public class UserService {
             u.setPhone(user.getPhone());
         if (user.getEmail() != null)
             u.setEmail(user.getEmail());
+        if (user.getOwnership() != null)
+            u.setOwnership(user.getOwnership());
         userRepository.save(u);
         return Optional.of(u);
     }
