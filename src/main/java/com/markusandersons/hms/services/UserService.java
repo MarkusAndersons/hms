@@ -43,8 +43,8 @@ public class UserService {  // TODO Replace this with interface and UserServiceI
                 .map(JsonUtils::getJson).collect(Collectors.toList());
     }
 
-    // TODO Use immutables/POJO as body !!!!!!!!!!!!!
-    public UserJson createUser(User user) {
+    public UserJson createUser(UserJson userJson) {
+        final User user = JsonUtils.getUser(userJson);
         userRepository.save(user);
         return JsonUtils.getJson(user);
     }
@@ -54,7 +54,7 @@ public class UserService {  // TODO Replace this with interface and UserServiceI
         return userOptional.map(JsonUtils::getJson);
     }
 
-    public Optional<UserJson> updateUser(UUID id, User user) {
+    public Optional<UserJson> updateUser(UUID id, UserJson user) {
         final Optional<User> optionalUser = userRepository.findById(id);
         if (!optionalUser.isPresent()) {
             return Optional.empty();
@@ -68,8 +68,7 @@ public class UserService {  // TODO Replace this with interface and UserServiceI
             u.setPhone(user.getPhone());
         if (user.getEmail() != null)
             u.setEmail(user.getEmail());
-        if (user.getOwnership() != null)
-            u.setOwnership(user.getOwnership());
+        // TODO update ownership
         userRepository.save(u);
         return Optional.of(JsonUtils.getJson(u));
     }

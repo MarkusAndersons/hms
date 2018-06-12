@@ -16,11 +16,8 @@
 
 package com.markusandersons.hms.controllers;
 
-import com.markusandersons.hms.models.User;
 import com.markusandersons.hms.models.UserJson;
 import com.markusandersons.hms.services.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -30,8 +27,6 @@ import java.util.UUID;
 @RequestMapping(path = "/api/users/")
 public class UserController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-
     private final UserService userService = new UserService();
 
     @RequestMapping(method = RequestMethod.GET, path = "/list")
@@ -40,7 +35,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/create")
-    public UserJson create(@RequestBody User user) {
+    public UserJson create(@RequestBody UserJson user) {
         return userService.createUser(user);
     }
 
@@ -50,7 +45,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/user/{id}")
-    public Optional<UserJson> update(@PathVariable UUID id, @RequestBody User user) {
+    public Optional<UserJson> update(@PathVariable UUID id, @RequestBody UserJson user) {
         return userService.updateUser(id, user);
     }
 

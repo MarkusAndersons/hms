@@ -20,6 +20,10 @@ import com.markusandersons.hms.models.*;
 import com.markusandersons.hms.models.ImmutableSharedItemJson;
 import com.markusandersons.hms.models.ImmutableUserJson;
 
+import javax.xml.ws.WebServiceException;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -34,7 +38,9 @@ public class JsonUtils {
                 .surname(user.getSurname())
                 .email(user.getEmail())
                 .phone(user.getPhone())
-                .build();
+                .putAllItems(user.getOwnership().stream().collect(
+                        Collectors.toMap(i -> i.getSharedItem().getId(), Ownership::getPercentage)
+                )).build();
     }
 
     public static SharedItemJson getJson(SharedItem item) {
@@ -44,13 +50,18 @@ public class JsonUtils {
                 .notes(item.getNotes())
                 .price(item.getPrice())
                 .putAllOwners(item.getOwnership().stream().collect(
-                        Collectors.toMap(Ownership::getId, Ownership::getPercentage)
+                        Collectors.toMap(i -> i.getUser().getId(), Ownership::getPercentage)
                 )).build();
     }
 
     public static User getUser(UserJson userJson) {
-        return null;
-        // TODO
+        return new User(
+                userJson.getFirstName(),
+                userJson.getSurname(),
+                userJson.getPhone(),
+                userJson.getEmail(),
+                Collections.EMPTY_LIST
+        );
     }
 
     public static SharedItem getSharedItem() {
