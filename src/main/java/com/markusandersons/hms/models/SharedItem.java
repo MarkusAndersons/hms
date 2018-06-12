@@ -17,6 +17,13 @@ public class SharedItem {
 
     public SharedItem() {}
 
+    public SharedItem(String name, String notes, double price, Collection<Ownership> ownership) {
+        this.name = name;
+        this.notes = notes;
+        this.price = price;
+        this.ownership = ownership;
+    }
+
     public UUID getId() {
         return id;
     }

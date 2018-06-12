@@ -12,9 +12,15 @@ public class Ownership {
     private SharedItem sharedItem;
     @ManyToOne
     private User user;
-    private float percentage;
+    private double percentage;
 
     public Ownership() {}
+
+    public Ownership(SharedItem sharedItem, User user, double percentage) {
+        this.sharedItem = sharedItem;
+        this.user = user;
+        this.percentage = percentage;
+    }
 
     public UUID getId() {
         return id;
@@ -40,7 +46,7 @@ public class Ownership {
         this.user = user;
     }
 
-    public float getPercentage() {
+    public double getPercentage() {
         return percentage;
     }
 
