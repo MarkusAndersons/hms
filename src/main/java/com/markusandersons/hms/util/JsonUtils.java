@@ -36,6 +36,7 @@ public class JsonUtils {
                 .id(user.getId() != null ? user.getId() : UUID.randomUUID())
                 .firstName(user.getFirstName())
                 .surname(user.getSurname())
+                .name(user.getName())
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .putAllItems(user.getOwnership().stream().collect(

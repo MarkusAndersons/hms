@@ -18,16 +18,18 @@ package com.markusandersons.hms.controllers;
 
 import com.markusandersons.hms.models.SharedItemJson;
 import com.markusandersons.hms.services.SharedItemService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(path = "/api/items/")
+@RequestMapping(path = "/api/items")
 public class SharedItemController {
 
-    private final SharedItemService sharedItemService = new SharedItemService();
+    @Autowired
+    private SharedItemService sharedItemService;
 
     @RequestMapping(method = RequestMethod.GET, path = "/list")
     public Iterable<SharedItemJson> items() {

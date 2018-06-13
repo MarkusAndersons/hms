@@ -18,16 +18,18 @@ package com.markusandersons.hms.controllers;
 
 import com.markusandersons.hms.models.UserJson;
 import com.markusandersons.hms.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(path = "/api/users/")
+@RequestMapping(path = "/api/users")
 public class UserController {
 
-    private final UserService userService = new UserService();
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(method = RequestMethod.GET, path = "/list")
     public Iterable<UserJson> users() {

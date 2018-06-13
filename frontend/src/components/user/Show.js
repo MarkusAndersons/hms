@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018 Markus Andersons
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import React, { Component } from 'react';
 import axios from 'axios';
 import {Link} from "react-router-dom";
@@ -7,22 +23,21 @@ class ShowUser extends Component {
     super(props);
     this.state = {
       user: {}
-     };
+    };
   }
 
   componentDidMount() {
-    // TODO uncomment once api is built
-    // axios.get('/api/user/' + this.props.match.params.id)
-    //     .then(res => {
-    //         this.setState({ user: res.data});
-    //     });
-    this.setState({
-      user: {
-        name: "John Doe",
-        phone: "+61 400 000 000",
-        email: "test@example.com"
-      }
-    });
+    axios.get('/api/users/user/' + this.props.match.params.id)
+        .then(res => {
+          this.setState({ user: res.data});
+        });
+  }
+
+  delete(id){
+    axios.delete('/api/users/user/' + id)
+        .then((result) => {
+          this.props.history.push("/users/list")
+        });
   }
 
   render() {
@@ -35,7 +50,7 @@ class ShowUser extends Component {
             </h3>
           </div>
           <div className="panel-body">
-            <h4><Link to="/"><span className="glyphicon glyphicon-th-list" aria-hidden="true"></span> Home</Link></h4>
+            <p><Link to="/users/list"><span className="glyphicon glyphicon-th-list" aria-hidden="true"></span> User List </Link></p>
             <dl>
               <dt>Name:</dt>
               <dd>{this.state.user.name}</dd>
@@ -44,10 +59,10 @@ class ShowUser extends Component {
               <dt>Email Address:</dt>
               <dd>{this.state.user.email}</dd>
             </dl>
-            <Link to={`/user/edit/${this.state.user.id}`} class="btn btn-success">Edit</Link>&nbsp;
-            {/*<button onClick={this.delete.bind(this, this.state.user.id)}*/}
-                    {/*className="btn btn-danger">Delete*/}
-            {/*</button>*/}
+            <Link to={`/users/edit/${this.state.user.id}`} class="btn btn-success">Edit</Link>&nbsp;
+            <button onClick={this.delete.bind(this, this.state.user.id)}
+                    className="btn btn-danger">Delete
+            </button>
           </div>
         </div>
       </div>

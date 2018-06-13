@@ -35,6 +35,8 @@ public interface UserJson {
 
     String getSurname();
 
+    Optional<String> getName();
+
     String getPhone();
 
     String getEmail();
