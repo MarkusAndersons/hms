@@ -28,8 +28,12 @@ import java.util.UUID;
 @RequestMapping(path = "/api/items")
 public class SharedItemController {
 
+    private final SharedItemService sharedItemService;
+
     @Autowired
-    private SharedItemService sharedItemService;
+    public SharedItemController(SharedItemService sharedItemService) {
+        this.sharedItemService = sharedItemService;
+    }
 
     @RequestMapping(method = RequestMethod.GET, path = "/list")
     public Iterable<SharedItemJson> items() {

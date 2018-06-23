@@ -28,8 +28,12 @@ import java.util.UUID;
 @RequestMapping(path = "/api/users")
 public class UserController {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping(method = RequestMethod.GET, path = "/list")
     public Iterable<UserJson> users() {

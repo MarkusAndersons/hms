@@ -61,7 +61,7 @@ public class JsonUtils {
                 userJson.getSurname(),
                 userJson.getPhone(),
                 userJson.getEmail(),
-                Collections.EMPTY_LIST
+                Collections.emptyList()
         );
     }
 
