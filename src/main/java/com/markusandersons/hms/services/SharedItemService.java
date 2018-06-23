@@ -35,12 +35,20 @@ import java.util.stream.StreamSupport;
 @Service
 public class SharedItemService {
 
+    private final SharedItemRepository sharedItemRepository;
+    private final UserRepository userRepository;
+    private final OwnershipRepository ownershipRepository;
+
     @Autowired
-    private SharedItemRepository sharedItemRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private OwnershipRepository ownershipRepository;
+    public SharedItemService(
+            SharedItemRepository sharedItemRepository,
+            UserRepository userRepository,
+            OwnershipRepository ownershipRepository
+    ) {
+        this.sharedItemRepository = sharedItemRepository;
+        this.userRepository = userRepository;
+        this.ownershipRepository = ownershipRepository;
+    }
 
     public Iterable<SharedItemJson> listSharedItems() {
         return StreamSupport.stream(sharedItemRepository.findAll().spliterator(), false)

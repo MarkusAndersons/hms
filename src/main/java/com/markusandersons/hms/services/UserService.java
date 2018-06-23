@@ -35,8 +35,12 @@ public class UserService {  // TODO Replace this with interface and UserServiceI
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public Iterable<UserJson> listUsers() {
         return StreamSupport.stream(userRepository.findAll().spliterator(), false)
