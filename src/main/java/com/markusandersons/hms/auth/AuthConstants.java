@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package com.markusandersons.hms;
+package com.markusandersons.hms.auth;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class HmsApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(HmsApplication.class, args);
-    }
+public class AuthConstants {
+    public static final long EXPIRATIONTIME = 864_000_000; // 10 days
+    public static final String SECRET = "jO9zrMFCPeITSGD8QGcLYmylQh_qkGEpRZwQDNKrl1o";
+    public static final String TOKEN_PREFIX = "Bearer";
+    public static final String HEADER_STRING = "Authorization";
 }

@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package com.markusandersons.hms;
+package com.markusandersons.hms.models;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.immutables.value.Value;
 
-@SpringBootApplication
-public class HmsApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(HmsApplication.class, args);
-    }
+@Value.Immutable
+@JsonSerialize(as = ImmutableAccountCredentials.class)
+@JsonDeserialize(as = ImmutableAccountCredentials.class)
+public interface AccountCredentials {
+    String getUsername();
+    String getPassword();
 }

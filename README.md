@@ -29,5 +29,10 @@ Why is it an over-engineered Java Spring app rather than just something like Rai
 
 Simply because I want to try out spring and it's super powerful.
 
-## To run
+## To configure
 Configure the DB by updating the `spring.datasource` values within the `application.properies` file.
+
+Update the value of the JWT secret in com.markusandersons.hms.auth.AuthConstants.
+
+## Notes
+* A default user is currently initialised with username "admin" and password "password". These should be removed from data.sql
