@@ -27,7 +27,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.util.MimeType;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -72,9 +71,8 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
                 .signWith(SignatureAlgorithm.HS512, AuthConstants.SECRET)
                 .compact();
         res.addHeader(AuthConstants.HEADER_STRING, AuthConstants.TOKEN_PREFIX + " " + jwt);
-        // TODO
-//        res.setContentType(MediaType.APPLICATION_JSON_VALUE);
-//        res.getOutputStream().print("{\"token\":\"" + jwt + "\"}");
-//        res.getOutputStream().flush();
+        res.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        res.getOutputStream().print("{\"token\":\"" + jwt + "\"}");
+        res.getOutputStream().flush();
     }
 }
