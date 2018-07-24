@@ -17,6 +17,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import AppConstants from '../../AppConstants';
 
 class CreateUser extends Component {
   constructor() {
@@ -39,9 +40,9 @@ class CreateUser extends Component {
 
     const { firstName, surname, phone, email } = this.state;
 
-    axios.post('/api/users/create', { firstName, surname, phone, email })
+    axios.post(AppConstants.API_USERS_CREATE, { firstName, surname, phone, email })
       .then((result) => {
-        this.props.history.push("/users/list")
+        this.props.history.push(AppConstants.PATH_USER_INDEX)
       });
   }
 
@@ -56,7 +57,7 @@ class CreateUser extends Component {
             </h3>
           </div>
           <div class="panel-body">
-            <p><Link to="/users/list"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> User List</Link></p>
+            <p><Link to={AppConstants.PATH_USER_INDEX}><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> User List</Link></p>
             <form onSubmit={this.onSubmit}>
               <div class="form-group">
                 <label for="firstName">First Name:</label>

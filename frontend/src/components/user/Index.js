@@ -17,6 +17,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {Link} from "react-router-dom";
+import AppConstants from '../../AppConstants';
 
 class IndexUser extends Component {
   constructor(props) {
@@ -27,12 +28,11 @@ class IndexUser extends Component {
   }
 
   componentDidMount() {
-    console.log("HERE");
-    axios.get('/api/users/list')
+    const token = localStorage.getItem("token");
+    const header = token ? {"Authorization": "Bearer " + localStorage.getItem("token")} : {};
+    axios.get(AppConstants.API_USERS_LIST, {headers: header})
       .then(res => {
-        console.log(res.data);
         this.setState({ users: res.data });
-        console.log(this.state.users);
       });
   }
 
@@ -46,7 +46,7 @@ class IndexUser extends Component {
             </h3>
           </div>
           <div class="panel-body">
-            <p><Link to="/users/create"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Create New User</Link></p>
+            <p><Link to={AppConstants.PATH_USER_CREATE}><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Create New User</Link></p>
             <table class="table table-stripe">
               <thead>
                 <tr>
@@ -58,7 +58,7 @@ class IndexUser extends Component {
               <tbody>
                 {this.state.users.map(u =>
                   <tr>
-                    <td><Link to={`/users/show/${u.id}`}>{u.name}</Link></td>
+                    <td><Link to={AppConstants.PATH_USER_SHOW + '/' + u.id}>{u.name}</Link></td>
                     <td>{u.email}</td>
                     <td>{u.phone}</td>
                   </tr>
@@ -69,8 +69,7 @@ class IndexUser extends Component {
         </div>
       </div>
     );
-}
-
+  }
 }
 
 export default IndexUser;

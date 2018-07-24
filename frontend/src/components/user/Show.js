@@ -17,6 +17,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {Link} from "react-router-dom";
+import AppConstants from '../../AppConstants';
 
 class ShowUser extends Component {
   constructor(props) {
@@ -27,16 +28,16 @@ class ShowUser extends Component {
   }
 
   componentDidMount() {
-    axios.get('/api/users/user/' + this.props.match.params.id)
+    axios.get(AppConstants.API_USERS_USER + '/' + this.props.match.params.id)
         .then(res => {
           this.setState({ user: res.data});
         });
   }
 
   delete(id){
-    axios.delete('/api/users/user/' + id)
+    axios.delete(AppConstants.API_USERS_USER + '/' + id)
         .then((result) => {
-          this.props.history.push("/users/list")
+          this.props.history.push(AppConstants.PATH_USER_INDEX)
         });
   }
 
@@ -50,7 +51,7 @@ class ShowUser extends Component {
             </h3>
           </div>
           <div className="panel-body">
-            <p><Link to="/users/list"><span className="glyphicon glyphicon-th-list" aria-hidden="true"></span> User List </Link></p>
+            <p><Link to={AppConstants.PATH_USER_INDEX}><span className="glyphicon glyphicon-th-list" aria-hidden="true"></span> User List </Link></p>
             <dl>
               <dt>Name:</dt>
               <dd>{this.state.user.name}</dd>
@@ -59,7 +60,7 @@ class ShowUser extends Component {
               <dt>Email Address:</dt>
               <dd>{this.state.user.email}</dd>
             </dl>
-            <Link to={`/users/edit/${this.state.user.id}`} class="btn btn-success">Edit</Link>&nbsp;
+            <Link to={AppConstants.PATH_USER_EDIT + '/' + this.state.user.id} class="btn btn-success">Edit</Link>&nbsp;
             <button onClick={this.delete.bind(this, this.state.user.id)}
                     className="btn btn-danger">Delete
             </button>

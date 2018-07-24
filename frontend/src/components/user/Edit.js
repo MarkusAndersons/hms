@@ -16,6 +16,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import AppConstants from '../../AppConstants';
 
 class EditUser extends Component {
   constructor(props) {
@@ -26,7 +27,7 @@ class EditUser extends Component {
   }
 
   componentDidMount() {
-    axios.get('/api/users/user/' + this.props.match.params.id)
+    axios.get(AppConstants.API_USERS_USER + '/' + this.props.match.params.id)
       .then(res => {
         this.setState({ user: res.data});
       });
@@ -43,9 +44,9 @@ class EditUser extends Component {
 
     const { firstName, surname, phone, email } = this.state.user;
 
-    axios.put('/api/users/user/'+this.props.match.params.id, { firstName, surname, phone, email })
+    axios.put(AppConstants.API_USERS_USER + '/' + this.props.match.params.id, { firstName, surname, phone, email })
       .then((result) => {
-        this.props.history.push("/users/show/"+this.props.match.params.id)
+        this.props.history.push(AppConstants.PATH_USER_SHOW + '/' + this.props.match.params.id)
       });
   }
 
@@ -59,7 +60,7 @@ class EditUser extends Component {
             </h3>
           </div>
           <div class="panel-body">
-            <p><Link to={`/users/show/${this.state.user.id}`}><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> User Details</Link></p>
+            <p><Link to={AppConstants.PATH_USER_SHOW + '/' + this.state.user.id}><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> User Details</Link></p>
             <form onSubmit={this.onSubmit}>
               <div class="form-group">
                 <label for="firstName">First Name:</label>

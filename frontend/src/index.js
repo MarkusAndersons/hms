@@ -24,15 +24,20 @@ import IndexUser from './components/user/Index';
 import EditUser from './components/user/Edit';
 import CreateUser from './components/user/Create';
 import ShowUser from './components/user/Show';
+import Login from './components/Login';
+import Logout from './components/Logout';
+import PrivateRoute from './PrivateRoute';
 
 ReactDOM.render(
   <BrowserRouter>
     <div>
       <Route exact path='/' component={App} />
-      <Route path='/users/list' component={IndexUser} />
-      <Route path='/users/edit/:id' component={EditUser} />
-      <Route path='/users/create' component={CreateUser} />
-      <Route path='/users/show/:id' component={ShowUser} />
+      <Route path='/login' component={Login} />
+      <Route path='/logout' component={Logout} />
+      <PrivateRoute path='/users/list' component={IndexUser} />
+      <PrivateRoute path='/users/edit/:id' component={EditUser} />
+      <PrivateRoute path='/users/create' component={CreateUser} />
+      <PrivateRoute path='/users/show/:id' component={ShowUser} />
     </div>
   </BrowserRouter>,
   document.getElementById('root')
