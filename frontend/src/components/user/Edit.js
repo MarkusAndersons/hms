@@ -17,7 +17,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import AppConstants from '../../AppConstants';
-
+import * as ApiTools from '../../ApiTools';
 class EditUser extends Component {
   constructor(props) {
     super(props);
@@ -27,7 +27,8 @@ class EditUser extends Component {
   }
 
   componentDidMount() {
-    axios.get(AppConstants.API_USERS_USER + '/' + this.props.match.params.id)
+    const header = ApiTools.getDefaultHeader();
+    axios.get(AppConstants.API_USERS_USER + '/' + this.props.match.params.id, {headers: header})
       .then(res => {
         this.setState({ user: res.data});
       });

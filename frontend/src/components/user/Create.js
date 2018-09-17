@@ -18,6 +18,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import AppConstants from '../../AppConstants';
+import * as ApiTools from '../../ApiTools';
 
 class CreateUser extends Component {
   constructor() {
@@ -40,7 +41,8 @@ class CreateUser extends Component {
 
     const { firstName, surname, phone, email } = this.state;
 
-    axios.post(AppConstants.API_USERS_CREATE, { firstName, surname, phone, email })
+    const header = ApiTools.getDefaultHeader();
+    axios.post(AppConstants.API_USERS_CREATE, { firstName, surname, phone, email }, {headers: header})
       .then((result) => {
         this.props.history.push(AppConstants.PATH_USER_INDEX)
       });

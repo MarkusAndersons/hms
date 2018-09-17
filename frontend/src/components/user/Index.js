@@ -18,6 +18,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import {Link} from "react-router-dom";
 import AppConstants from '../../AppConstants';
+import * as ApiTools from '../../ApiTools';
 
 class IndexUser extends Component {
   constructor(props) {
@@ -28,8 +29,7 @@ class IndexUser extends Component {
   }
 
   componentDidMount() {
-    const token = localStorage.getItem("token");
-    const header = token ? {"Authorization": "Bearer " + localStorage.getItem("token")} : {};
+    const header = ApiTools.getDefaultHeader();
     axios.get(AppConstants.API_USERS_LIST, {headers: header})
       .then(res => {
         this.setState({ users: res.data });
