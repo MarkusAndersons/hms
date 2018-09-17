@@ -25,9 +25,7 @@
 ```
 
 This is a housemate management system. 
-Why is it an over-engineered Java Spring app rather than just something like Rails?
-
-Simply because I want to try out spring and it's super powerful.
+Why is it an over-engineered Java Spring app rather than just something like Rails? I have no idea.
 
 ## To configure
 Configure the DB by updating the `spring.datasource` values within the `application.properies` file.
