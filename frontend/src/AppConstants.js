@@ -20,11 +20,18 @@ export default Object.freeze({
   API_USERS_LIST: "/api/users/list",
   API_USERS_CREATE: "/api/users/create",
   API_USERS_USER: "/api/users/user",
+  API_ITEMS_LIST: "/api/items/list",
+  API_ITEMS_CREATE: "/api/items/create",
+  API_ITEMS_ITEM: "/api/items/item",
 
   // PATHS
   PATH_USER_INDEX: "/users/list",
   PATH_USER_CREATE: "/users/create",
   PATH_USER_SHOW: "/users/show",
   PATH_USER_EDIT: "/users/edit",
+  PATH_ITEM_INDEX: "/items/list",
+  PATH_ITEM_CREATE: "/items/create",
+  PATH_ITEM_SHOW: "/items/show",
+  PATH_ITEM_EDIT: "/items/edit",
   PATH_LOGIN: "/login"
 });

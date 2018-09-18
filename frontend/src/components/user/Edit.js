@@ -17,7 +17,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import AppConstants from '../../AppConstants';
-import * as ApiTools from '../../ApiTools';
+import * as ApiTools from '../../services/ApiTools';
+import Layout from '../Layout';
 class EditUser extends Component {
   constructor(props) {
     super(props);
@@ -53,37 +54,39 @@ class EditUser extends Component {
 
   render() {
     return (
-      <div class="container">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">
-              Edit User
-            </h3>
-          </div>
-          <div class="panel-body">
-            <p><Link to={AppConstants.PATH_USER_SHOW + '/' + this.state.user.id}><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> User Details</Link></p>
-            <form onSubmit={this.onSubmit}>
-              <div class="form-group">
-                <label for="firstName">First Name:</label>
-                <input type="text" class="form-control" name="firstName" value={this.state.user.firstName} onChange={this.onChange} placeholder="First Name" />
-              </div>
-              <div class="form-group">
-                <label for="surname">Surname:</label>
-                <input type="text" class="form-control" name="surname" value={this.state.user.surname} onChange={this.onChange} placeholder="Surname" />
-              </div>
-              <div class="form-group">
-                <label for="phone">Phone Number:</label>
-                <input type="text" class="form-control" name="phone" value={this.state.user.phone} onChange={this.onChange} placeholder="Phone Number" />
-              </div>
-              <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" class="form-control" name="email" value={this.state.user.email} onChange={this.onChange} placeholder="Email Address" />
-              </div>
-              <button type="submit" class="btn btn-default">Update</button>
-            </form>
+      <Layout>
+        <div className="container">
+          <div className="panel panel-default">
+            <div className="panel-heading">
+              <h3 className="panel-title">
+                Edit User
+              </h3>
+            </div>
+            <div className="panel-body">
+              <p><Link to={AppConstants.PATH_USER_SHOW + '/' + this.state.user.id}><span className="glyphicon glyphicon-eye-open" aria-hidden="true"></span> User Details</Link></p>
+              <form onSubmit={this.onSubmit}>
+                <div className="form-group">
+                  <label for="firstName">First Name:</label>
+                  <input type="text" className="form-control" name="firstName" value={this.state.user.firstName} onChange={this.onChange} placeholder="First Name" />
+                </div>
+                <div className="form-group">
+                  <label for="surname">Surname:</label>
+                  <input type="text" className="form-control" name="surname" value={this.state.user.surname} onChange={this.onChange} placeholder="Surname" />
+                </div>
+                <div className="form-group">
+                  <label for="phone">Phone Number:</label>
+                  <input type="text" className="form-control" name="phone" value={this.state.user.phone} onChange={this.onChange} placeholder="Phone Number" />
+                </div>
+                <div className="form-group">
+                  <label for="email">Email:</label>
+                  <input type="email" className="form-control" name="email" value={this.state.user.email} onChange={this.onChange} placeholder="Email Address" />
+                </div>
+                <button type="submit" className="btn btn-default">Update</button>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 }

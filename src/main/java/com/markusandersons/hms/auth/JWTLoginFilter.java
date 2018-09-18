@@ -64,7 +64,6 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
             HttpServletResponse res, FilterChain chain,
             Authentication auth
     ) throws IOException, ServletException {
-        System.out.println("HERE");
         final String jwt = Jwts.builder()
                 .setSubject(auth.getName())
                 .setExpiration(new Date(System.currentTimeMillis() + AuthConstants.EXPIRATIONTIME))

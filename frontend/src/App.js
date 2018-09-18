@@ -30,7 +30,10 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
-          <Link to={`/users/list`}>Users</Link>
+        <ul>
+          <li><Link to={`/users/list`}>Users</Link></li>
+          <li><Link to={`/items/list`}>Items</Link></li>
+        </ul>
       </div>
     );
   }

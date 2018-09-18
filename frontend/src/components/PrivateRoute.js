@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-import { Component } from 'react';
+import React from 'react';
+import { Route, Redirect } from 'react-router-dom';
 import AppConstants from '../AppConstants';
 import AuthService from '../services/AuthService';
 
-class Logout extends Component {
-  componentDidMount() {
-    AuthService.removeToken();
-    this.props.history.push(AppConstants.PATH_LOGIN);
-  }
-
-  render() {
-    return null;
-  }
+export default function PrivateRoute({ component: Component, ...rest }) {
+  return (
+  <Route {...rest} render={(props) => (
+    AuthService.isAuthenticated() === true
+      ? <Component {...props} />
+      : <Redirect to={AppConstants.PATH_LOGIN} />
+    )} />
+  );
 }
-
-export default Logout;

@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
-import AppConstants from './AppConstants';
-import AuthService from './AuthService';
-
-export default function PrivateRoute({ component: Component, ...rest }) {
-  return (
-  <Route {...rest} render={(props) => (
-    AuthService.isAuthenticated() === true
-      ? <Component {...props} />
-      : <Redirect to={AppConstants.PATH_LOGIN} />
-    )} />
-  );
+/**
+ * Format a number into a price
+ * @param {number} price the double to be formatted
+ */
+const formatPrice = (price) => {
+  if (price) {
+    return '$' + price.toFixed(2);
+  }
+  return null;
 }
+
+export {formatPrice};

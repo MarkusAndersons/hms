@@ -18,7 +18,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import {Link} from "react-router-dom";
 import AppConstants from '../../AppConstants';
-import * as ApiTools from '../../ApiTools';
+import * as ApiTools from '../../services/ApiTools';
+import Layout from '../Layout';
 
 class ShowUser extends Component {
   constructor(props) {
@@ -46,30 +47,32 @@ class ShowUser extends Component {
 
   render() {
     return (
-      <div className="container">
-        <div className="panel panel-default">
-          <div className="panel-heading">
-            <h3 className="panel-title">
-              User Details
-            </h3>
-          </div>
-          <div className="panel-body">
-            <p><Link to={AppConstants.PATH_USER_INDEX}><span className="glyphicon glyphicon-th-list" aria-hidden="true"></span> User List </Link></p>
-            <dl>
-              <dt>Name:</dt>
-              <dd>{this.state.user.name}</dd>
-              <dt>Phone Number:</dt>
-              <dd>{this.state.user.phone}</dd>
-              <dt>Email Address:</dt>
-              <dd>{this.state.user.email}</dd>
-            </dl>
-            <Link to={AppConstants.PATH_USER_EDIT + '/' + this.state.user.id} class="btn btn-success">Edit</Link>&nbsp;
-            <button onClick={this.delete.bind(this, this.state.user.id)}
-                    className="btn btn-danger">Delete
-            </button>
+      <Layout>
+        <div className="container">
+          <div className="panel panel-default">
+            <div className="panel-heading">
+              <h3 className="panel-title">
+                User Details
+              </h3>
+            </div>
+            <div className="panel-body">
+              <p><Link to={AppConstants.PATH_USER_INDEX}><span className="glyphicon glyphicon-th-list" aria-hidden="true"></span> User List </Link></p>
+              <dl>
+                <dt>Name:</dt>
+                <dd>{this.state.user.name}</dd>
+                <dt>Phone Number:</dt>
+                <dd>{this.state.user.phone}</dd>
+                <dt>Email Address:</dt>
+                <dd>{this.state.user.email}</dd>
+              </dl>
+              <Link to={AppConstants.PATH_USER_EDIT + '/' + this.state.user.id} className="btn btn-success">Edit</Link>&nbsp;
+              <button onClick={this.delete.bind(this, this.state.user.id)}
+                      className="btn btn-danger">Delete
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 

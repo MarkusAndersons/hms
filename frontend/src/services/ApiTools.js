@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-class AuthService {
-  static removeToken() {
-    localStorage.removeItem("token");
-    localStorage.setItem("authenticated", false);
-  }
-
-  static storeToken(token) {
-    localStorage.setItem("token", token);
-    localStorage.setItem("authenticated", true);
-  }
-
-  static isAuthenticated() {
-    const authenticated = (localStorage.getItem("authenticated") === "true");
-    return authenticated === null ? false : authenticated;
-  }
+ /**
+  * Get the default header containing the stored token
+  */
+const getDefaultHeader = () => {
+  const token = localStorage.getItem("token");
+  return token ? {"Authorization": "Bearer " + localStorage.getItem("token")} : {};
 }
 
-export default AuthService;
+export {getDefaultHeader};

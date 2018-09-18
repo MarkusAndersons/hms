@@ -17,7 +17,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import AppConstants from '../AppConstants';
-import AuthService from '../AuthService';
+import AuthService from '../services/AuthService';
 
 class Login extends Component {
   constructor(props) {
@@ -54,7 +54,7 @@ class Login extends Component {
       password: ''
     });
   }
-  
+
   onSubmit = (e) => {
     e.preventDefault();
 
