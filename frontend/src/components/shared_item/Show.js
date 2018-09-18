@@ -38,7 +38,7 @@ class ShowItem extends Component {
         });
   }
 
-  delete(id) {
+  delete = (id) => {
     const header = ApiTools.getDefaultHeader();
     axios.delete(AppConstants.API_ITEMS_ITEM + '/' + id, {headers: header})
         .then((result) => {
@@ -46,13 +46,12 @@ class ShowItem extends Component {
         });
   }
 
-  formatOwnership(ownership, price) {
+  formatOwnership = (ownership, price) => {
     if (ownership && price) {
       let data = [];
       Object.keys(ownership).forEach((key) => {
         data.push([key, ownership[key]])
       })
-      console.log(data);
       return (
         <table>
           <tbody>

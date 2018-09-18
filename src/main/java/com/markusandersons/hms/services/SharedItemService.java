@@ -41,9 +41,9 @@ public class SharedItemService {
 
     @Autowired
     public SharedItemService(
-            SharedItemRepository sharedItemRepository,
-            UserRepository userRepository,
-            OwnershipRepository ownershipRepository
+        SharedItemRepository sharedItemRepository,
+        UserRepository userRepository,
+        OwnershipRepository ownershipRepository
     ) {
         this.sharedItemRepository = sharedItemRepository;
         this.userRepository = userRepository;
@@ -52,7 +52,7 @@ public class SharedItemService {
 
     public Iterable<SharedItemJson> listSharedItems() {
         return StreamSupport.stream(sharedItemRepository.findAll().spliterator(), false)
-                .map(JsonUtils::getJson).collect(Collectors.toList());
+            .map(JsonUtils::getJson).collect(Collectors.toList());
     }
 
     public SharedItemJson createSharedItem(SharedItemJson sharedItemJson) {
@@ -71,10 +71,10 @@ public class SharedItemService {
         }
 
         final SharedItem newItem = new SharedItem(
-                sharedItemJson.getName(),
-                sharedItemJson.getNotes(),
-                sharedItemJson.getPrice(),
-                ownerships
+            sharedItemJson.getName(),
+            sharedItemJson.getNotes(),
+            sharedItemJson.getPrice(),
+            ownerships
         );
         sharedItemRepository.save(newItem);
         for (Ownership o : ownerships) {
@@ -82,6 +82,31 @@ public class SharedItemService {
             ownershipRepository.save(o);
         }
         return JsonUtils.getJson(newItem);
+    }
+
+    public Optional<SharedItemJson> updateItem(UUID id, SharedItemJson item) {
+        final Optional<SharedItem> optionalSharedItem = sharedItemRepository.findById(id);
+        if (!optionalSharedItem.isPresent()) {
+            return Optional.empty();
+        }
+        final SharedItem i = optionalSharedItem.get();
+        if (item.getName() != null)
+            i.setName(item.getName());
+        if (item.getNotes() != null)
+            i.setNotes(item.getNotes());
+        i.setPrice(item.getPrice());
+
+        // update ownership
+        final Collection<Ownership> oldOwnership = i.getOwnership();
+        final Collection<Ownership> newOwnership = item.getOwners().entrySet().stream()
+            .map(entry -> new Ownership(i, userRepository.findById(entry.getKey()).get(), entry.getValue()))
+            .collect(Collectors.toList());
+        i.setOwnership(newOwnership);
+        for (Ownership ownership: oldOwnership) {
+            ownershipRepository.delete(ownership);
+        }
+        sharedItemRepository.save(i);
+        return Optional.of(JsonUtils.getJson(i));
     }
 
     public Optional<SharedItemJson> getSharedItem(UUID id) {

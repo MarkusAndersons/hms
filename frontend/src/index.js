@@ -29,6 +29,8 @@ import IndexItem from './components/shared_item/Index';
 import Login from './components/Login';
 import Logout from './components/Logout';
 import PrivateRoute from './components/PrivateRoute';
+import CreateItem from './components/shared_item/Create';
+import EditItem from './components/shared_item/Edit';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -41,7 +43,9 @@ ReactDOM.render(
       <PrivateRoute path='/users/create' component={CreateUser} />
       <PrivateRoute path='/users/show/:id' component={ShowUser} />
       <PrivateRoute path='/items/list' component={IndexItem} />
+      <PrivateRoute path='/items/create' component={CreateItem} />
       <PrivateRoute path='/items/show/:id' component={ShowItem} />
+      <PrivateRoute path='/items/edit/:id' component={EditItem} />
     </div>
   </BrowserRouter>,
   document.getElementById('root')

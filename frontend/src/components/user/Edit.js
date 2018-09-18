@@ -46,7 +46,8 @@ class EditUser extends Component {
 
     const { firstName, surname, phone, email } = this.state.user;
 
-    axios.put(AppConstants.API_USERS_USER + '/' + this.props.match.params.id, { firstName, surname, phone, email })
+    const header = ApiTools.getDefaultHeader();
+    axios.put(AppConstants.API_USERS_USER + '/' + this.props.match.params.id, { firstName, surname, phone, email }, {headers: header})
       .then((result) => {
         this.props.history.push(AppConstants.PATH_USER_SHOW + '/' + this.props.match.params.id)
       });

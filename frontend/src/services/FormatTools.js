@@ -25,4 +25,39 @@ const formatPrice = (price) => {
   return null;
 }
 
-export {formatPrice};
+/**
+ * Validate the fields for an item
+ * @param {React.Component} self the react component being validated
+ */
+const validateItemData = (name, price, owners, self) => {
+  let { validField } = self.state;
+  let valid = true;
+  if (name === "") {
+    validField.name = false;
+    valid = false;
+  } else {
+    validField.name = true;
+  }
+  if (price === '') {
+    validField.price = false;
+    valid = false;
+  } else {
+    validField.price = true;
+  }
+  // Validate percentage ownership
+  let total = 0.0;
+  Object.keys(owners).forEach((key) =>
+    total += Number(owners[key])
+  );
+  if (Math.abs(total - 100) > 1e-5) {
+    validField.ownership = false;
+    valid = false;
+  } else {
+    validField.ownership = true;
+  }
+  if (!valid) {
+    self.setState({validField: validField});
+  }
+  return valid;
+}
+export {formatPrice, validateItemData};

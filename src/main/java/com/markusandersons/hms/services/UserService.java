@@ -72,7 +72,6 @@ public class UserService {  // TODO Replace this with interface and UserServiceI
             u.setPhone(user.getPhone());
         if (user.getEmail() != null)
             u.setEmail(user.getEmail());
-        // TODO update ownership
         userRepository.save(u);
         return Optional.of(JsonUtils.getJson(u));
     }

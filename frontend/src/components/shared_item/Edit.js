@@ -18,37 +18,65 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import AppConstants from '../../AppConstants';
 import * as ApiTools from '../../services/ApiTools';
+import * as FormatTools from '../../services/FormatTools';
 import Layout from '../Layout';
+
 class EditItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: {}
+      item: {},
+      users: [],
+      validField: {
+        name: true,
+        notes: true,
+        price: true,
+        ownership: true
+      }
     };
   }
 
   componentDidMount() {
     const header = ApiTools.getDefaultHeader();
-    axios.get(AppConstants.API_USERS_USER + '/' + this.props.match.params.id, {headers: header})
+    axios.get(AppConstants.API_ITEMS_ITEM + '/' + this.props.match.params.id, {headers: header})
       .then(res => {
-        this.setState({ user: res.data});
+        let data = res.data;
+        data.ownership = null;
+        this.setState({ item: data});
+      });
+    axios.get(AppConstants.API_USERS_LIST, {headers: header})
+      .then(res => {
+        this.setState({ users: res.data });
       });
   }
 
   onChange = (e) => {
-    const state = this.state.user
+    const state = this.state.item;
     state[e.target.name] = e.target.value;
-    this.setState({ user: state });
+    this.setState({ item: state });
+    FormatTools.validateItemData(this.state.item.name, this.state.item.price, this.state.item.owners, this);
+  }
+
+  onOwnershipChange = (e) => {
+    const state = this.state.item;
+    state["owners"][e.target.name.substr(0, e.target.name.length - 11)] = Number(e.target.value);
+    this.setState(state);
+    FormatTools.validateItemData(this.state.item.name, this.state.item.price, this.state.item.owners, this);
   }
 
   onSubmit = (e) => {
     e.preventDefault();
 
-    const { firstName, surname, phone, email } = this.state.user;
+    const valid = FormatTools.validateItemData(this.state.item.name, this.state.item.price, this.state.item.owners, this);
+    if (!valid) {
+      return;
+    }
+    const { name, notes, price, owners } = this.state.item;
 
-    axios.put(AppConstants.API_USERS_USER + '/' + this.props.match.params.id, { firstName, surname, phone, email })
+    const header = ApiTools.getDefaultHeader();
+    axios.put(AppConstants.API_ITEMS_ITEM + '/' + this.props.match.params.id, { name, notes, price, owners }, {headers: header})
       .then((result) => {
-        this.props.history.push(AppConstants.PATH_USER_SHOW + '/' + this.props.match.params.id)
+        this.props.history.push(AppConstants.PATH_ITEM_SHOW + '/' + this.props.match.params.id)
       });
   }
 
@@ -63,25 +91,41 @@ class EditItem extends Component {
               </h3>
             </div>
             <div className="panel-body">
-              <p><Link to={AppConstants.PATH_USER_SHOW + '/' + this.state.user.id}><span className="glyphicon glyphicon-eye-open" aria-hidden="true"></span> User Details</Link></p>
+              <p><Link to={AppConstants.PATH_ITEM_SHOW + '/' + this.state.item.id}><span className="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Item Details</Link></p>
               <form onSubmit={this.onSubmit}>
                 <div className="form-group">
-                  <label for="firstName">First Name:</label>
-                  <input type="text" className="form-control" name="firstName" value={this.state.user.firstName} onChange={this.onChange} placeholder="First Name" />
+                  <label htmlFor="name">Item Name:</label>
+                  <input type="text" className={"form-control" + (this.state.validField.name ? "" : " is-invalid")} name="name" value={this.state.item.name} onChange={this.onChange} placeholder="Item Name" />
+                  <div className="invalid-feedback">
+                    Please enter an item name.
+                  </div>
                 </div>
                 <div className="form-group">
-                  <label for="surname">Surname:</label>
-                  <input type="text" className="form-control" name="surname" value={this.state.user.surname} onChange={this.onChange} placeholder="Surname" />
+                  <label htmlFor="price">Price:</label>
+                  <input type="number" step="any" className={"form-control" + (this.state.validField.price ? "" : " is-invalid")} name="price" value={this.state.item.price} onChange={this.onChange} placeholder="Price" />
+                  <div className="invalid-feedback">
+                    Please enter a price for the item.
+                  </div>
                 </div>
                 <div className="form-group">
-                  <label for="phone">Phone Number:</label>
-                  <input type="text" className="form-control" name="phone" value={this.state.user.phone} onChange={this.onChange} placeholder="Phone Number" />
+                  <label htmlFor="notes">Notes:</label>
+                  <textarea type="text" className="form-control" name="notes" value={this.state.item.notes} onChange={this.onChange} placeholder="Notes" />
                 </div>
-                <div className="form-group">
-                  <label for="email">Email:</label>
-                  <input type="email" className="form-control" name="email" value={this.state.user.email} onChange={this.onChange} placeholder="Email Address" />
+                <div>
+                  <label>Ownership Percentages:</label>
+                  {this.state.users.map(u =>
+                    <div key={u.id} className="form-group row">
+                      <label htmlFor={u.id + "_percentage"} className="col-sm-2 col-form-label">{u.name}</label>
+                      <div className="col-sm-10">
+                        <input type="number" step="any" className={"form-control" + (this.state.validField.ownership ? "" : " is-invalid")} name={u.id + "_percentage"} value={this.state.item.owners[u.id]} onChange={this.onOwnershipChange} placeholder="%" />
+                        <div className="row invalid-feedback">
+                          All percentages must add to 100%.
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <button type="submit" className="btn btn-default">Update</button>
+                <button type="submit" className="btn btn-default">Submit</button>
               </form>
             </div>
           </div>

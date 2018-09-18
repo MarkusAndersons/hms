@@ -49,4 +49,9 @@ public class SharedItemController {
     public Optional<SharedItemJson> show(@PathVariable UUID id) {
         return sharedItemService.getSharedItem(id);
     }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/item/{id}")
+    public Optional<SharedItemJson> update(@PathVariable UUID id, @RequestBody SharedItemJson item) {
+        return sharedItemService.updateItem(id, item);
+    }
 }
