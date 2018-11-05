@@ -16,28 +16,8 @@
 
 package com.markusandersons.hms.models;
 
-import lombok.Data;
-
-import javax.persistence.*;
-import java.util.UUID;
-
-@Entity
-@Data
-public class Ownership {
-    @Id
-    @GeneratedValue
-    private UUID id;
-    @ManyToOne
-    private SharedItem sharedItem;
-    @ManyToOne
-    private User user;
-    private double percentage;
-
-    public Ownership() {}
-
-    public Ownership(SharedItem sharedItem, User user, double percentage) {
-        this.sharedItem = sharedItem;
-        this.user = user;
-        this.percentage = percentage;
-    }
+public enum PaymentCycle {
+    MONTHLY,
+    YEARLY,
+    FIXED_DAYS
 }

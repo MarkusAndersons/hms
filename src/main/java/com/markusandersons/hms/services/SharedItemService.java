@@ -35,6 +35,7 @@ import java.util.stream.StreamSupport;
 @Service
 public class SharedItemService {
 
+    private static final double EPSILON = 1e-5;
     private final SharedItemRepository sharedItemRepository;
     private final UserRepository userRepository;
     private final OwnershipRepository ownershipRepository;
@@ -66,7 +67,7 @@ public class SharedItemService {
             ownerships.add(new Ownership(null, user.get(), entry.getValue()));
             totalPercentage += entry.getValue();
         }
-        if (totalPercentage < 99) { // TODO Update this check
+        if (Math.abs(totalPercentage - 100) > EPSILON) {
             throw new WebServiceException("Ownership is not 100%");
         }
 

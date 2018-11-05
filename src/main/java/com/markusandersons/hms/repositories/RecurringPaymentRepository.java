@@ -14,30 +14,12 @@
  * limitations under the License.
  */
 
-package com.markusandersons.hms.models;
+package com.markusandersons.hms.repositories;
 
-import lombok.Data;
+import com.markusandersons.hms.models.RecurringPayment;
+import org.springframework.data.repository.CrudRepository;
 
-import javax.persistence.*;
 import java.util.UUID;
 
-@Entity
-@Data
-public class Ownership {
-    @Id
-    @GeneratedValue
-    private UUID id;
-    @ManyToOne
-    private SharedItem sharedItem;
-    @ManyToOne
-    private User user;
-    private double percentage;
-
-    public Ownership() {}
-
-    public Ownership(SharedItem sharedItem, User user, double percentage) {
-        this.sharedItem = sharedItem;
-        this.user = user;
-        this.percentage = percentage;
-    }
+public interface RecurringPaymentRepository extends CrudRepository<RecurringPayment, UUID> {
 }

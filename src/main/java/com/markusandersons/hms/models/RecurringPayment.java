@@ -17,29 +17,44 @@
 package com.markusandersons.hms.models;
 
 import lombok.Data;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.UUID;
 
 @Entity
 @Data
-public class SharedItem {
+public class RecurringPayment {
     @Id
     @GeneratedValue
     private UUID id;
     private String name;
     private String notes;
-    private double price;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "sharedItem")
-    private Collection<Ownership> ownership;
+    private LocalDate nextPaymentDate;
+    private PaymentCycle paymentCycle;
+    @Nullable
+    private Integer paymentDays;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "recurringPayment")
+    private Collection<PaymentArrangement> paymentArrangements;
 
-    public SharedItem() {}
+    public RecurringPayment() {
+    }
 
-    public SharedItem(String name, String notes, double price, Collection<Ownership> ownership) {
+    public RecurringPayment(
+        String name,
+        String notes,
+        LocalDate nextPaymentDate,
+        PaymentCycle paymentCycle,
+        Collection<PaymentArrangement> paymentArrangements,
+        Integer paymentDays
+    ) {
         this.name = name;
         this.notes = notes;
-        this.price = price;
-        this.ownership = ownership;
+        this.nextPaymentDate = nextPaymentDate;
+        this.paymentCycle = paymentCycle;
+        this.paymentArrangements = paymentArrangements;
+        this.paymentDays = paymentDays;
     }
 }

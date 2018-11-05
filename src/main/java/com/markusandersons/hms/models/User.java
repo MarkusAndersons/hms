@@ -16,12 +16,15 @@
 
 package com.markusandersons.hms.models;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
+@Data
 public class User {
     @Id
     @GeneratedValue
@@ -34,95 +37,45 @@ public class User {
     private String email;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Collection<Ownership> ownership;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Collection<PaymentArrangement> paymentArrangements;
 
     public User() {
     }
 
-    public User(String firstName, String surname, String phone, String email, Collection<Ownership> ownership) {
+    public User(
+        String username,
+        String password,
+        String firstName,
+        String surname,
+        String phone,
+        String email,
+        Collection<Ownership> ownership,
+        Collection<PaymentArrangement> paymentArrangements
+    ) {
+        this.username = username;
+        this.password = password;
         this.firstName = firstName;
         this.surname = surname;
         this.phone = phone;
         this.email = email;
         this.ownership = ownership;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
+        this.paymentArrangements = paymentArrangements;
     }
 
     public String getName() {
         return this.firstName + " " + this.surname;
     }
 
-    public String getFirstName() {
-        return this.firstName;
-    }
-
-    public String getSurname() {
-        return this.surname;
-    }
-
-    public void setFirstName(String name) {
-        this.firstName = name;
-    }
-
-    public void setSurname(String name) {
-        this.surname = name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Collection<Ownership> getOwnership() {
-        return ownership;
-    }
-
-    public void setOwnership(Collection<Ownership> ownership) {
-        this.ownership = ownership;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", surname='" + surname + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+            "id=" + id +
+            ", username='" + username + '\'' +
+            ", firstName='" + firstName + '\'' +
+            ", surname='" + surname + '\'' +
+            ", phone='" + phone + '\'' +
+            ", email='" + email + '\'' +
+            '}';
     }
 }

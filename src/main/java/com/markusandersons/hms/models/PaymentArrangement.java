@@ -18,25 +18,32 @@ package com.markusandersons.hms.models;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.util.UUID;
 
 @Entity
 @Data
-public class Ownership {
+public class PaymentArrangement {
     @Id
     @GeneratedValue
     private UUID id;
     @ManyToOne
-    private SharedItem sharedItem;
+    private RecurringPayment recurringPayment;
     @ManyToOne
     private User user;
+//    @ManyToOne
+//    private Optional<User> personResponsible;   // TODO????
+
     private double percentage;
 
-    public Ownership() {}
+    public PaymentArrangement() {
+    }
 
-    public Ownership(SharedItem sharedItem, User user, double percentage) {
-        this.sharedItem = sharedItem;
+    public PaymentArrangement(RecurringPayment recurringPayment, User user, double percentage) {
+        this.recurringPayment = recurringPayment;
         this.user = user;
         this.percentage = percentage;
     }
