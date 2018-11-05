@@ -16,11 +16,21 @@
 
 package com.markusandersons.hms.services;
 
+import com.markusandersons.hms.models.RecurringPayment;
+import com.markusandersons.hms.models.RecurringPaymentJson;
+import com.markusandersons.hms.models.SharedItem;
+import com.markusandersons.hms.models.SharedItemJson;
 import com.markusandersons.hms.repositories.RecurringPaymentRepository;
+import com.markusandersons.hms.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class RecurringPaymentsService {
@@ -32,5 +42,15 @@ public class RecurringPaymentsService {
     @Autowired
     public RecurringPaymentsService(RecurringPaymentRepository recurringPaymentRepository) {
         this.recurringPaymentRepository = recurringPaymentRepository;
+    }
+
+    public Iterable<RecurringPaymentJson> listSharedItems() {
+        return StreamSupport.stream(recurringPaymentRepository.findAll().spliterator(), false)
+            .map(JsonUtils::getJson).collect(Collectors.toList());
+    }
+
+    public Optional<RecurringPaymentJson> getRecurringPayment(UUID id) {
+        final Optional<RecurringPayment> itemOptional = recurringPaymentRepository.findById(id);
+        return itemOptional.map(JsonUtils::getJson);
     }
 }

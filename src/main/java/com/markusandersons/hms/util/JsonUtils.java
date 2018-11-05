@@ -19,6 +19,7 @@ package com.markusandersons.hms.util;
 import com.markusandersons.hms.models.*;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -62,13 +63,13 @@ public class JsonUtils {
             .notes(recurringPayment.getNotes())
             .nextPaymentDate(recurringPayment.getNextPaymentDate())
             .paymentCycle(recurringPayment.getPaymentCycle())
+            .paymentDays(Optional.ofNullable(recurringPayment.getPaymentDays()))
             .putAllUsers(recurringPayment.getPaymentArrangements().stream().collect(
-                Collectors.toMap(p -> p.getRecurringPayment().getId(), PaymentArrangement::getPercentage)))
+                Collectors.toMap(p -> p.getUser().getId(), PaymentArrangement::getPercentage)))
             .putAllOwnership(recurringPayment.getPaymentArrangements().stream().collect(
                 Collectors.toMap(
-                    p -> p.getRecurringPayment().getId(),
-                    p -> new OwnershipStringDoubleTuple(p.getRecurringPayment().getName(), p.getPercentage())))
-            )
+                    p -> p.getUser().getId(),
+                    p -> new OwnershipStringDoubleTuple(p.getUser().getName(), p.getPercentage()))))
             .build();
     }
 

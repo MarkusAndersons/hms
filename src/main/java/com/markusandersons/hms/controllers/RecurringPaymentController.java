@@ -16,10 +16,16 @@
 
 package com.markusandersons.hms.controllers;
 
+import com.markusandersons.hms.models.RecurringPaymentJson;
 import com.markusandersons.hms.services.RecurringPaymentsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/api/recurring_payments")
@@ -32,4 +38,13 @@ public class RecurringPaymentController {
         this.recurringPaymentsService = recurringPaymentsService;
     }
 
+    @RequestMapping(method = RequestMethod.GET, path = "/list")
+    public Iterable<RecurringPaymentJson> items() {
+        return recurringPaymentsService.listSharedItems();
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/payment/{id}")
+    public Optional<RecurringPaymentJson> show(@PathVariable UUID id) {
+        return recurringPaymentsService.getRecurringPayment(id);
+    }
 }

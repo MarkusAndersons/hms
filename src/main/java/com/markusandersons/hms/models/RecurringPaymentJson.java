@@ -40,7 +40,7 @@ public interface RecurringPaymentJson {
 
     PaymentCycle getPaymentCycle();
 
-    Integer getPaymentDays();
+    Optional<Integer> getPaymentDays();
 
     Map<UUID, Double> getUsers();
 
