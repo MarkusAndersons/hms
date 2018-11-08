@@ -34,7 +34,8 @@ public class SharedItem {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sharedItem")
     private Collection<Ownership> ownership;
 
-    public SharedItem() {}
+    public SharedItem() {
+    }
 
     public SharedItem(String name, String notes, double price, Collection<Ownership> ownership) {
         this.name = name;

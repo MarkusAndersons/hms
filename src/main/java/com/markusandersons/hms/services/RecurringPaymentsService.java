@@ -18,8 +18,6 @@ package com.markusandersons.hms.services;
 
 import com.markusandersons.hms.models.RecurringPayment;
 import com.markusandersons.hms.models.RecurringPaymentJson;
-import com.markusandersons.hms.models.SharedItem;
-import com.markusandersons.hms.models.SharedItemJson;
 import com.markusandersons.hms.repositories.RecurringPaymentRepository;
 import com.markusandersons.hms.util.JsonUtils;
 import org.slf4j.Logger;

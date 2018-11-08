@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
-public class UserService {  // TODO Replace this with interface and UserServiceImpl
+public class UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
@@ -44,7 +44,7 @@ public class UserService {  // TODO Replace this with interface and UserServiceI
 
     public Iterable<UserJson> listUsers() {
         return StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .map(JsonUtils::getJson).collect(Collectors.toList());
+            .map(JsonUtils::getJson).collect(Collectors.toList());
     }
 
     public UserJson createUser(UserJson userJson) {

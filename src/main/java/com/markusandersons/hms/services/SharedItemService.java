@@ -103,7 +103,7 @@ public class SharedItemService {
             .map(entry -> new Ownership(i, userRepository.findById(entry.getKey()).get(), entry.getValue()))
             .collect(Collectors.toList());
         i.setOwnership(newOwnership);
-        for (Ownership ownership: oldOwnership) {
+        for (Ownership ownership : oldOwnership) {
             ownershipRepository.delete(ownership);
         }
         sharedItemRepository.save(i);

@@ -39,5 +39,6 @@ public interface SharedItemJson {
 
     // Mapping of user ID and the percentage of ownership
     Map<UUID, Double> getOwners();
+
     Map<UUID, OwnershipStringDoubleTuple> getOwnership();
 }

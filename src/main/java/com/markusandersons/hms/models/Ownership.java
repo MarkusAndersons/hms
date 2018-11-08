@@ -18,7 +18,10 @@ package com.markusandersons.hms.models;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.util.UUID;
 
 @Entity
@@ -33,7 +36,8 @@ public class Ownership {
     private User user;
     private double percentage;
 
-    public Ownership() {}
+    public Ownership() {
+    }
 
     public Ownership(SharedItem sharedItem, User user, double percentage) {
         this.sharedItem = sharedItem;

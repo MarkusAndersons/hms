@@ -45,30 +45,30 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
     @Override
     public Authentication attemptAuthentication(
-            HttpServletRequest req,
-            HttpServletResponse res
+        HttpServletRequest req,
+        HttpServletResponse res
     ) throws AuthenticationException, IOException, ServletException {
         final AccountCredentials accountCredentials = new ObjectMapper().readValue(req.getInputStream(), AccountCredentials.class);
         return getAuthenticationManager().authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        accountCredentials.getUsername(),
-                        accountCredentials.getPassword(),
-                        Collections.emptyList()
-                )
+            new UsernamePasswordAuthenticationToken(
+                accountCredentials.getUsername(),
+                accountCredentials.getPassword(),
+                Collections.emptyList()
+            )
         );
     }
 
     @Override
     public void successfulAuthentication(
-            HttpServletRequest req,
-            HttpServletResponse res, FilterChain chain,
-            Authentication auth
+        HttpServletRequest req,
+        HttpServletResponse res, FilterChain chain,
+        Authentication auth
     ) throws IOException, ServletException {
         final String jwt = Jwts.builder()
-                .setSubject(auth.getName())
-                .setExpiration(new Date(System.currentTimeMillis() + AuthConstants.EXPIRATIONTIME))
-                .signWith(SignatureAlgorithm.HS512, AuthConstants.SECRET)
-                .compact();
+            .setSubject(auth.getName())
+            .setExpiration(new Date(System.currentTimeMillis() + AuthConstants.EXPIRATIONTIME))
+            .signWith(SignatureAlgorithm.HS512, AuthConstants.SECRET)
+            .compact();
         res.addHeader(AuthConstants.HEADER_STRING, AuthConstants.TOKEN_PREFIX + " " + jwt);
         res.setContentType(MediaType.APPLICATION_JSON_VALUE);
         res.getOutputStream().print("{\"token\":\"" + jwt + "\"}");

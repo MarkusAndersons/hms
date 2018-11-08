@@ -25,5 +25,6 @@ import org.immutables.value.Value;
 @JsonDeserialize(as = ImmutableAccountCredentials.class)
 public interface AccountCredentials {
     String getUsername();
+
     String getPassword();
 }
