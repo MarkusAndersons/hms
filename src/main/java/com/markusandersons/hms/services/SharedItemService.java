@@ -23,6 +23,7 @@ import com.markusandersons.hms.models.User;
 import com.markusandersons.hms.repositories.OwnershipRepository;
 import com.markusandersons.hms.repositories.SharedItemRepository;
 import com.markusandersons.hms.repositories.UserRepository;
+import com.markusandersons.hms.util.ApplicationConstants;
 import com.markusandersons.hms.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,6 @@ import java.util.stream.StreamSupport;
 @Service
 public class SharedItemService {
 
-    private static final double EPSILON = 1e-5;
     private final SharedItemRepository sharedItemRepository;
     private final UserRepository userRepository;
     private final OwnershipRepository ownershipRepository;
@@ -67,7 +67,7 @@ public class SharedItemService {
             ownerships.add(new Ownership(null, user.get(), entry.getValue()));
             totalPercentage += entry.getValue();
         }
-        if (Math.abs(totalPercentage - 100) > EPSILON) {
+        if (Math.abs(totalPercentage - 100) > ApplicationConstants.EPSILON) {
             throw new WebServiceException("Ownership is not 100%");
         }
 
