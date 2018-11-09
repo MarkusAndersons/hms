@@ -33,6 +33,7 @@ class App extends Component {
         <ul>
           <li><Link to={`/users/list`}>Users</Link></li>
           <li><Link to={`/items/list`}>Items</Link></li>
+          <li><Link to={`/recurring_payments/list`}>Recurring Payments</Link></li>
         </ul>
       </div>
     );

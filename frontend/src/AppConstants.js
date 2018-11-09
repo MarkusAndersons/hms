@@ -23,6 +23,9 @@ export default Object.freeze({
   API_ITEMS_LIST: "/api/items/list",
   API_ITEMS_CREATE: "/api/items/create",
   API_ITEMS_ITEM: "/api/items/item",
+  API_PAYMENT_LIST: "/api/recurring_payments/list",
+  API_PAYMENT_CREATE: "/api/recurring_payments/create",
+  API_PAYMENT_PAYMENT: "/api/recurring_payments/payment",
   API_STATUS: "/status",
 
   // Paths
@@ -34,6 +37,10 @@ export default Object.freeze({
   PATH_ITEM_CREATE: "/items/create",
   PATH_ITEM_SHOW: "/items/show",
   PATH_ITEM_EDIT: "/items/edit",
+  PATH_RECURRING_PAYMENT_INDEX: "/recurring_payments/list",
+  PATH_RECURRING_PAYMENT_CREATE: "/recurring_payments/create",
+  PATH_RECURRING_PAYMENT_SHOW: "/recurring_payments/show",
+  PATH_RECURRING_PAYMENT_EDIT: "/recurring_payments/edit",
   PATH_LOGIN: "/login",
 
   // Constant values

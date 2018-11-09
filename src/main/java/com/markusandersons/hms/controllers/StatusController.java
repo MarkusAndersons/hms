@@ -21,6 +21,8 @@ import com.markusandersons.hms.models.ImmutableStatusJson;
 import com.markusandersons.hms.models.StatusJson;
 import com.markusandersons.hms.util.ApplicationConstants;
 import io.jsonwebtoken.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -36,8 +38,11 @@ import java.util.Optional;
 @RestController
 public class StatusController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(StatusController.class);
+
     @RequestMapping(path = "/status")
     public StatusJson getStatus(@RequestHeader HttpHeaders headers) {
+        LOGGER.debug("Status Requested");
         final List<String> authHeaders = headers.get("Authorization");
         final Optional<String> authHeader = authHeaders == null ? Optional.empty() : Optional.of(authHeaders.get(0));
         final String auth;

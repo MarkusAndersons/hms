@@ -71,6 +71,7 @@ class AuthService {
           authenticated = false;
         } else {
           authenticated = true;
+          localStorage.setItem("auth_time", Date.now())
         }
       })
       .catch((error) => {

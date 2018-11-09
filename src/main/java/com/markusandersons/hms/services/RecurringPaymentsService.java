@@ -83,6 +83,7 @@ public class RecurringPaymentsService {
         final RecurringPayment newItem = new RecurringPayment(
             recurringPaymentJson.getName(),
             recurringPaymentJson.getNotes(),
+            recurringPaymentJson.getPaymentAmount(),
             recurringPaymentJson.getNextPaymentDate(),
             recurringPaymentJson.getPaymentCycle(),
             paymentArrangements,

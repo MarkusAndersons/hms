@@ -32,6 +32,7 @@ public class RecurringPayment {
     private UUID id;
     private String name;
     private String notes;
+    private double paymentAmount;
     private LocalDate nextPaymentDate;
     private PaymentCycle paymentCycle;
     @Nullable
@@ -45,6 +46,7 @@ public class RecurringPayment {
     public RecurringPayment(
         String name,
         String notes,
+        double paymentAmount,
         LocalDate nextPaymentDate,
         PaymentCycle paymentCycle,
         Collection<PaymentArrangement> paymentArrangements,
@@ -52,6 +54,7 @@ public class RecurringPayment {
     ) {
         this.name = name;
         this.notes = notes;
+        this.paymentAmount = paymentAmount;
         this.nextPaymentDate = nextPaymentDate;
         this.paymentCycle = paymentCycle;
         this.paymentArrangements = paymentArrangements;

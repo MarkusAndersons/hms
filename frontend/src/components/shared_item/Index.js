@@ -19,6 +19,7 @@ import axios from 'axios';
 import {Link} from "react-router-dom";
 import AppConstants from '../../AppConstants';
 import * as ApiTools from '../../services/ApiTools';
+import * as FormatTools from '../../services/FormatTools';
 import Layout from '../Layout';
 
 class IndexItem extends Component {
@@ -81,7 +82,7 @@ class IndexItem extends Component {
                   {this.state.items.map(i =>
                     <tr key={i.id}>
                       <td><Link to={AppConstants.PATH_ITEM_SHOW + '/' + i.id}>{i.name}</Link></td>
-                      <td>{i.price}</td>
+                      <td>{FormatTools.formatPrice(i.price)}</td>
                       <td>{i.notes}</td>
                       <td>{this.listOwners(i.ownership)}</td>
                     </tr>

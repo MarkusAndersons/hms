@@ -31,6 +31,11 @@ import Logout from './components/Logout';
 import PrivateRoute from './components/PrivateRoute';
 import CreateItem from './components/shared_item/Create';
 import EditItem from './components/shared_item/Edit';
+import IndexPayment from './components/recurring_payment/Index';
+import EditPayment from './components/recurring_payment/Edit';
+import CreatePayment from './components/recurring_payment/Create';
+import ShowPayment from './components/recurring_payment/Show';
+
 
 ReactDOM.render(
   <BrowserRouter>
@@ -46,6 +51,10 @@ ReactDOM.render(
       <PrivateRoute path='/items/create' component={CreateItem} />
       <PrivateRoute path='/items/show/:id' component={ShowItem} />
       <PrivateRoute path='/items/edit/:id' component={EditItem} />
+      <PrivateRoute path='/recurring_payments/list' component={IndexPayment} />
+      <PrivateRoute path='/recurring_payments/create' component={CreatePayment} />
+      <PrivateRoute path='/recurring_payments/show/:id' component={ShowPayment} />
+      <PrivateRoute path='/recurring_payments/edit/:id' component={EditPayment} />
     </div>
   </BrowserRouter>,
   document.getElementById('root')

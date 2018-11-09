@@ -19,8 +19,8 @@ VALUES ('0517A545-1AAE-458F-A40B-68F7209E8911', 60, '6FACE8D6-ADD7-4C17-B1D8-54E
 
 
 -- Create test recurring payment
-INSERT INTO recurring_payment (id, name, next_payment_date, notes, payment_cycle, payment_days)
-VALUES ('312866D7-0628-4E8C-A45D-37C1BE7DAB7C', 'Rent', now(), 'Payment to be made by person X', 0, null);
+INSERT INTO recurring_payment (id, name, payment_amount, next_payment_date, notes, payment_cycle, payment_days)
+VALUES ('312866D7-0628-4E8C-A45D-37C1BE7DAB7C', 'Rent', 1500, now(), 'Payment to be made by person X', 0, null);
 
 -- Create Payment Arrangements
 INSERT INTO payment_arrangement (id, percentage, recurring_payment_id, user_id)

@@ -22,27 +22,19 @@ import * as ApiTools from '../../services/ApiTools';
 import * as FormatTools from '../../services/FormatTools';
 import Layout from '../Layout';
 
-class ShowItem extends Component {
+class IndexPayment extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      item: {}
+      payments: []
     };
   }
 
   componentDidMount() {
     const header = ApiTools.getDefaultHeader();
-    axios.get(AppConstants.API_ITEMS_ITEM + '/' + this.props.match.params.id, {headers: header})
+    axios.get(AppConstants.API_PAYMENT_LIST, {headers: header})
       .then(res => {
-        this.setState({ item: res.data});
-      });
-  }
-
-  delete = (id) => {
-    const header = ApiTools.getDefaultHeader();
-    axios.delete(AppConstants.API_ITEMS_ITEM + '/' + id, {headers: header})
-      .then((result) => {
-        this.props.history.push(AppConstants.PATH_ITEM_INDEX)
+        this.setState({ payments: res.data });
       });
   }
 
@@ -53,32 +45,37 @@ class ShowItem extends Component {
           <div className="panel panel-default">
             <div className="panel-heading">
               <h3 className="panel-title">
-                Item Details
+                Item List
               </h3>
             </div>
             <div className="panel-body">
-              <p><Link to={AppConstants.PATH_ITEM_INDEX}><span className="glyphicon glyphicon-th-list" aria-hidden="true"></span> Item List </Link></p>
-              <dl>
-                <dt>Name:</dt>
-                <dd>{this.state.item.name}</dd>
-                <dt>Price:</dt>
-                <dd>{FormatTools.formatPrice(this.state.item.price)}</dd>
-                <dt>Notes:</dt>
-                <dd>{this.state.item.notes}</dd>
-                <dt>Ownership:</dt>
-                <dd>{FormatTools.formatOwnership(this.state.item.ownership, this.state.item.price, "Percentage Owned")}</dd>
-              </dl>
-              <Link to={AppConstants.PATH_ITEM_EDIT + '/' + this.state.item.id} className="btn btn-success">Edit</Link>&nbsp;
-              <button onClick={this.delete.bind(this, this.state.item.id)}
-                      className="btn btn-danger">Delete
-              </button>
+              <p><Link to={AppConstants.PATH_RECURRING_PAYMENT_CREATE}><span className="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Create New Recurring Payment</Link></p>
+              <table className="table table-stripe">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Payment Amount</th>
+                    <th>Notes</th>
+                    <th>Next Due</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.payments.map(p =>
+                    <tr key={p.id}>
+                      <td><Link to={AppConstants.PATH_RECURRING_PAYMENT_SHOW + '/' + p.id}>{p.name}</Link></td>
+                      <td>{FormatTools.formatPrice(p.paymentAmount)}</td>
+                      <td>{p.notes}</td>
+                      <td>{FormatTools.formatDueDate(p.nextPaymentDate)}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </Layout>
     );
   }
-
 }
 
-export default ShowItem;
+export default IndexPayment;

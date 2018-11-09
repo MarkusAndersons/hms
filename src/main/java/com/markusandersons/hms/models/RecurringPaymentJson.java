@@ -36,6 +36,8 @@ public interface RecurringPaymentJson {
 
     String getNotes();
 
+    double getPaymentAmount();
+
     LocalDate getNextPaymentDate();
 
     PaymentCycle getPaymentCycle();

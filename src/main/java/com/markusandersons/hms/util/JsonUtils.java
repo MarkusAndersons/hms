@@ -61,6 +61,7 @@ public class JsonUtils {
             .id(recurringPayment.getId() != null ? recurringPayment.getId() : UUID.randomUUID())
             .name(recurringPayment.getName())
             .notes(recurringPayment.getNotes())
+            .paymentAmount(recurringPayment.getPaymentAmount())
             .nextPaymentDate(recurringPayment.getNextPaymentDate())
             .paymentCycle(recurringPayment.getPaymentCycle())
             .paymentDays(Optional.ofNullable(recurringPayment.getPaymentDays()))
