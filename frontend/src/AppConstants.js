@@ -23,8 +23,9 @@ export default Object.freeze({
   API_ITEMS_LIST: "/api/items/list",
   API_ITEMS_CREATE: "/api/items/create",
   API_ITEMS_ITEM: "/api/items/item",
+  API_STATUS: "/status",
 
-  // PATHS
+  // Paths
   PATH_USER_INDEX: "/users/list",
   PATH_USER_CREATE: "/users/create",
   PATH_USER_SHOW: "/users/show",
@@ -33,5 +34,8 @@ export default Object.freeze({
   PATH_ITEM_CREATE: "/items/create",
   PATH_ITEM_SHOW: "/items/show",
   PATH_ITEM_EDIT: "/items/edit",
-  PATH_LOGIN: "/login"
+  PATH_LOGIN: "/login",
+
+  // Constant values
+  MAX_AUTH_AGE: 3600000 // Micros
 });

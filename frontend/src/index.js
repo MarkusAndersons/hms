@@ -35,7 +35,7 @@ import EditItem from './components/shared_item/Edit';
 ReactDOM.render(
   <BrowserRouter>
     <div>
-      <Route exact path='/' component={App} />
+      <PrivateRoute exact path='/' component={App} />
       <Route path='/login' component={Login} />
       <Route path='/logout' component={Logout} />
       <PrivateRoute path='/users/list' component={IndexUser} />
