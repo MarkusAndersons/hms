@@ -49,4 +49,9 @@ public class RecurringPaymentController {
     public Optional<RecurringPaymentJson> show(@PathVariable UUID id) {
         return recurringPaymentsService.getRecurringPayment(id);
     }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/payment/{id}")
+    public Optional<RecurringPaymentJson> update(@PathVariable UUID id, @RequestBody RecurringPaymentJson payment) {
+        return recurringPaymentsService.updatePayment(id, payment);
+    }
 }

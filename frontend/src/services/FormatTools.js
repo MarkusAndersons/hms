@@ -36,7 +36,7 @@ const formatPrice = (price) => {
 const formatDueDate = (date) => {
   if (date) {
     const formatted = new Date(parseInt(date.substr(0, 4), 10), parseInt(date.substr(5, 7), 10)-1, parseInt(date.substr(8, 10), 10));
-    const soon = new Date() - formatted < 86400000;
+    const soon = formatted - new Date() < 86400000;
     if (soon)
       return <p className='text-danger'>{date}</p>
     return <p>{date}</p>;
@@ -115,4 +115,41 @@ const validateItemData = (name, price, owners, self) => {
   }
   return valid;
 }
-export {formatPrice, formatDueDate, formatOwnership, validateItemData};
+
+/**
+ * Validate the fields for a recurring payment
+ * @param {React.Component} self the react component being validated
+ */
+const validateRecurringPaymentData = (name, paymentAmount, owners, self) => {
+  let { validField } = self.state;
+  let valid = true;
+  if (name === "") {
+    validField.name = false;
+    valid = false;
+  } else {
+    validField.name = true;
+  }
+  if (paymentAmount === '') {
+    validField.paymentAmount = false;
+    valid = false;
+  } else {
+    validField.paymentAmount = true;
+  }
+  // Validate percentage ownership
+  let total = 0.0;
+  Object.keys(owners).forEach((key) =>
+    total += Number(owners[key])
+  );
+  if (Math.abs(total - 100) > 1e-5) {
+    validField.ownership = false;
+    valid = false;
+  } else {
+    validField.ownership = true;
+  }
+  if (!valid) {
+    self.setState({validField: validField});
+  }
+  return valid;
+}
+
+export {formatPrice, formatDueDate, formatOwnership, validateItemData, validateRecurringPaymentData};

@@ -21,6 +21,7 @@ import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -47,11 +48,26 @@ public class RecurringPayment {
         String name,
         String notes,
         double paymentAmount,
+        PaymentCycle paymentCycle,
+        Collection<PaymentArrangement> paymentArrangements,
+        Integer paymentDays
+    ) {
+        this(name, notes, paymentAmount, null, paymentCycle, paymentArrangements, paymentDays);
+        calculateNextPaymentDate();
+    }
+
+    public RecurringPayment(
+        String name,
+        String notes,
+        double paymentAmount,
         LocalDate nextPaymentDate,
         PaymentCycle paymentCycle,
         Collection<PaymentArrangement> paymentArrangements,
         Integer paymentDays
     ) {
+        if (paymentCycle == PaymentCycle.FIXED_DAYS && paymentDays == null) {
+            throw new IllegalArgumentException();
+        }
         this.name = name;
         this.notes = notes;
         this.paymentAmount = paymentAmount;
@@ -59,5 +75,23 @@ public class RecurringPayment {
         this.paymentCycle = paymentCycle;
         this.paymentArrangements = paymentArrangements;
         this.paymentDays = paymentDays;
+    }
+
+    public void calculateNextPaymentDate() {
+        this.calculateNextPaymentDate(LocalDate.now(ZoneId.of("UTC")));
+    }
+
+    public void calculateNextPaymentDate(LocalDate lastPaymentDate) {
+        switch (this.paymentCycle) {
+            case YEARLY:
+                this.nextPaymentDate = lastPaymentDate.plusYears(1);
+                break;
+            case MONTHLY:
+                this.nextPaymentDate = lastPaymentDate.plusMonths(1);
+                break;
+            case FIXED_DAYS:
+                this.nextPaymentDate = lastPaymentDate.plusDays(this.paymentDays == null ? this.paymentDays : 0);
+                break;
+        }
     }
 }

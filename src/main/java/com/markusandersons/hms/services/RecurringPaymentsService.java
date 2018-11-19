@@ -31,6 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.xml.ws.WebServiceException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -65,6 +67,7 @@ public class RecurringPaymentsService {
         return itemOptional.map(JsonUtils::getJson);
     }
 
+    // TODO Handle missing next payment date
     public RecurringPaymentJson createRecurringPayment(RecurringPaymentJson recurringPaymentJson) {
         double totalPercentage = 0;
         List<PaymentArrangement> paymentArrangements = new ArrayList<>();
@@ -80,20 +83,78 @@ public class RecurringPaymentsService {
             throw new WebServiceException("Ownership is not 100%");
         }
 
-        final RecurringPayment newItem = new RecurringPayment(
-            recurringPaymentJson.getName(),
-            recurringPaymentJson.getNotes(),
-            recurringPaymentJson.getPaymentAmount(),
-            recurringPaymentJson.getNextPaymentDate(),
-            recurringPaymentJson.getPaymentCycle(),
-            paymentArrangements,
-            recurringPaymentJson.getPaymentDays().orElse(null)
-        );
+        final RecurringPayment newItem;
+        if (recurringPaymentJson.getNextPaymentDate().isPresent()) {
+            newItem = new RecurringPayment(
+                recurringPaymentJson.getName(),
+                recurringPaymentJson.getNotes(),
+                recurringPaymentJson.getPaymentAmount(),
+                recurringPaymentJson.getNextPaymentDate().get(),
+                recurringPaymentJson.getPaymentCycle(),
+                paymentArrangements,
+                recurringPaymentJson.getPaymentDays().orElse(null)
+            );
+        } else {
+            newItem = new RecurringPayment(
+                recurringPaymentJson.getName(),
+                recurringPaymentJson.getNotes(),
+                recurringPaymentJson.getPaymentAmount(),
+                recurringPaymentJson.getPaymentCycle(),
+                paymentArrangements,
+                recurringPaymentJson.getPaymentDays().orElse(null)
+            );
+        }
         recurringPaymentRepository.save(newItem);
         for (PaymentArrangement p : paymentArrangements) {
             p.setRecurringPayment(newItem);
             paymentArrangementRepository.save(p);
         }
         return JsonUtils.getJson(newItem);
+    }
+
+    public Optional<RecurringPaymentJson> updatePayment(UUID id, RecurringPaymentJson payment) {
+        final Optional<RecurringPayment> optionalRecurringPayment = recurringPaymentRepository.findById(id);
+        if (!optionalRecurringPayment.isPresent()) {
+            return Optional.empty();
+        }
+        final RecurringPayment p = optionalRecurringPayment.get();
+        if (payment.getName() != null)
+            p.setName(payment.getName());
+        if (payment.getNotes() != null)
+            p.setNotes(payment.getNotes());
+        if (payment.getNextPaymentDate().isPresent())
+            p.setNextPaymentDate(payment.getNextPaymentDate().get());
+        if (payment.getPaymentCycle() != null)
+            p.setPaymentCycle(payment.getPaymentCycle());
+        if (payment.getPaymentDays().isPresent())
+            p.setPaymentDays(payment.getPaymentDays().get());
+        p.setPaymentAmount(payment.getPaymentAmount());
+
+        if (p.getNextPaymentDate().isBefore(LocalDate.now(ZoneId.of("UTC")))) {
+            p.calculateNextPaymentDate();
+        }
+
+        // update payment arrangement
+        final Collection<PaymentArrangement> oldOwnership = p.getPaymentArrangements();
+        final Collection<PaymentArrangement> newOwnership = payment.getUsers().entrySet().stream()
+            .map(entry -> new PaymentArrangement(p, userRepository.findById(entry.getKey()).get(), entry.getValue()))
+            .collect(Collectors.toList());
+        p.setPaymentArrangements(newOwnership);
+        for (PaymentArrangement paymentArrangement : oldOwnership) {
+            paymentArrangementRepository.delete(paymentArrangement);
+        }
+        recurringPaymentRepository.save(p);
+        return Optional.of(JsonUtils.getJson(p));
+    }
+
+    // Method to be called by worker to update next payment dates
+    public void updateAllPaymentDates() {
+        final Iterable<RecurringPayment> payments = recurringPaymentRepository.findAll();
+        for (RecurringPayment payment : payments) {
+            if (payment.getNextPaymentDate().isBefore(LocalDate.now(ZoneId.of("UTC")))) {
+                payment.calculateNextPaymentDate();
+                recurringPaymentRepository.save(payment);
+            }
+        }
     }
 }

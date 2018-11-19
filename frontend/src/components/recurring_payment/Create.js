@@ -21,6 +21,8 @@ import AppConstants from '../../AppConstants';
 import * as ApiTools from '../../services/ApiTools';
 import * as FormatTools from '../../services/FormatTools';
 import Layout from '../Layout';
+import { SingleDatePicker } from 'react-dates';
+import moment from 'moment';
 
 class CreatePayment extends Component {
   constructor() {
@@ -28,15 +30,20 @@ class CreatePayment extends Component {
     this.state = {
       name: '',
       notes: '',
-      nextPaymentDate: null,
-      paymentCycle: '',
+      paymentAmount: 0.0,
+      paymentDate: moment(),
+      paymentCycleType: "Monthly",
       users: [],
+      owners: {},
+      daysFieldRequired: false,
+      paymentDays: 0,
       validField: {
         name: true,
         notes: true,
-        price: true,
+        paymentAmount: true,
         ownership: true
-      }
+      },
+      focused: false
     };
   }
 
@@ -51,61 +58,107 @@ class CreatePayment extends Component {
   onChange = (e) => {
     const state = this.state
     state[e.target.name] = e.target.value;
+    state['daysFieldRequired'] = state.paymentCycleType !== "Monthly" && state.paymentCycleType !== "Yearly";
     this.setState(state);
-    FormatTools.validateItemData(this.state.name, this.state.price, this.state.owners, this);
+    FormatTools.validateRecurringPaymentData(this.state.name, this.state.paymentAmount, this.state.owners, this);
+  }
+
+  onDateChange = (date) => {
+    const state = this.state;
+    state.paymentDate = date;
+    this.setState(state);
   }
 
   onOwnershipChange = (e) => {
     const state = this.state
     state["owners"][e.target.name.substr(0, e.target.name.length - 11)] = Number(e.target.value);
     this.setState(state);
-    FormatTools.validateItemData(this.state.name, this.state.price, this.state.owners, this);
+    FormatTools.validateRecurringPaymentData(this.state.name, this.state.paymentAmount, this.state.owners, this);
   }
 
   onSubmit = (e) => {
     e.preventDefault();
 
-    const { name, price, notes, owners } = this.state;
+    const { name, paymentAmount, notes, owners, paymentCycleType, paymentDate } = this.state;
+    const users = owners;
+    let paymentCycle = '';
     // Validate data
-    const valid = FormatTools.validateItemData(this.state.name, this.state.price, this.state.owners, this);
+    const valid = FormatTools.validateRecurringPaymentData(this.state.name, this.state.paymentAmount, this.state.owners, this);
     if (!valid) {
       return;
     }
 
+    // Convert payment cycle to correct enum
+    if (paymentCycleType === "Monthly")
+      paymentCycle = "MONTHLY";
+    else if (paymentCycleType === "Yearly")
+      paymentCycle = "YEARLY";
+    else
+      paymentCycle = "FIXED_DAYS";
+
     const header = ApiTools.getDefaultHeader();
-    axios.post(AppConstants.API_ITEMS_CREATE, { name, price, notes, owners }, {headers: header})
+    const nextPaymentDate = paymentDate.format("YYYY-MM-DD")
+    axios.post(AppConstants.API_PAYMENT_CREATE, { name, paymentAmount, notes, paymentCycle, nextPaymentDate, users }, {headers: header})
       .then((result) => {
-        this.props.history.push(AppConstants.PATH_ITEM_INDEX)
+        this.props.history.push(AppConstants.PATH_RECURRING_PAYMENT_INDEX)
       });
   }
 
   render() {
-    const { name, notes, price, owners } = this.state;
+    const { name, notes, paymentAmount, paymentCycleType, paymentDays, daysFieldRequired, owners } = this.state;
     return (
       <Layout>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">
               <h3 className="panel-title">
-                Create User
+                Create Recurring Payment
               </h3>
             </div>
             <div className="panel-body">
-              <p><Link to={AppConstants.PATH_ITEM_INDEX}><span className="glyphicon glyphicon-th-list" aria-hidden="true"></span> Item List</Link></p>
+              <p><Link to={AppConstants.PATH_RECURRING_PAYMENT_INDEX}><span className="glyphicon glyphicon-th-list" aria-hidden="true"></span> Recurring Payments List</Link></p>
               <form onSubmit={this.onSubmit}>
                 <div className="form-group">
                   <label htmlFor="name">Item Name:</label>
-                  <input type="text" className={"form-control" + (this.state.validField.name ? "" : " is-invalid")} name="name" value={name} onChange={this.onChange} placeholder="Item Name" />
+                  <input type="text" className={"form-control" + (this.state.validField.name ? "" : " is-invalid")} name="name" value={name} onChange={this.onChange} placeholder="Payment Name" />
                   <div className="invalid-feedback">
-                    Please enter an item name.
+                    Please enter a name for the payment.
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="price">Price:</label>
-                  <input type="number" step="any" className={"form-control" + (this.state.validField.price ? "" : " is-invalid")} name="price" value={price} onChange={this.onChange} placeholder="Price" />
+                  <label htmlFor="paymentAmount">Payment Amount:</label>
+                  <input type="number" step="any" className={"form-control" + (this.state.validField.paymentAmount ? "" : " is-invalid")} name="paymentAmount" value={paymentAmount} onChange={this.onChange} placeholder="Payment Amount" />
                   <div className="invalid-feedback">
-                    Please enter a price for the item.
+                    Please enter a payment amount.
                   </div>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="paymentCycleType">Notes:</label>
+                  <select className="form-control" name="paymentCycleType" value={paymentCycleType} onChange={this.onChange}>
+                    <option>Monthly</option>
+                    <option>Every X days</option>
+                    <option>Yearly</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  {daysFieldRequired ? ([
+                    <label htmlFor="paymentDays">Days Between Payments:</label>,
+                    <input type="number" step="1" className={"form-control" + (this.state.validField.paymentAmount ? "" : " is-invalid")} name="paymentDays" value={paymentDays} onChange={this.onChange} placeholder="Payment Days" />,
+                    <div className="invalid-feedback">
+                      Please enter a valid number of days between payments.
+                    </div>
+                  ]) : null}
+                </div>
+                <div className="form-group">
+                  <label htmlFor="paymentDate">Next Payment Date:</label>
+                  <SingleDatePicker
+                    date={this.state.paymentDate}
+                    onDateChange={date => this.onDateChange(date)}
+                    focused={this.state.focused}
+                    onFocusChange={({ focused }) => this.setState({ focused })}
+                    id="paymentDate"
+                    displayFormat="DD/MM/YYYY"
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="notes">Notes:</label>

@@ -19,6 +19,8 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
 import App from './App';
 import IndexUser from './components/user/Index';
 import EditUser from './components/user/Edit';

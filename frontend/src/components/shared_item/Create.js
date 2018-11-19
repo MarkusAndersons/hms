@@ -87,7 +87,7 @@ class CreateItem extends Component {
           <div className="panel panel-default">
             <div className="panel-heading">
               <h3 className="panel-title">
-                Create User
+                Create Shared Item
               </h3>
             </div>
             <div className="panel-body">

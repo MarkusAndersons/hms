@@ -58,7 +58,6 @@ class ShowPayment extends Component {
   }
 
   render() {
-    console.log(this.state.payment)
     return (
       <Layout>
         <div className="container">
@@ -69,7 +68,7 @@ class ShowPayment extends Component {
               </h3>
             </div>
             <div className="panel-body">
-              <p><Link to={AppConstants.PATH_ITEM_INDEX}><span className="glyphicon glyphicon-th-list" aria-hidden="true"></span> Payments List </Link></p>
+              <p><Link to={AppConstants.PATH_RECURRING_PAYMENT_INDEX}><span className="glyphicon glyphicon-th-list" aria-hidden="true"></span> Payments List </Link></p>
               <dl>
                 <dt>Name:</dt>
                 <dd>{this.state.payment.name}</dd>

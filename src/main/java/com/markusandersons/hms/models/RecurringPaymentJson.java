@@ -38,7 +38,7 @@ public interface RecurringPaymentJson {
 
     double getPaymentAmount();
 
-    LocalDate getNextPaymentDate();
+    Optional<LocalDate> getNextPaymentDate();
 
     PaymentCycle getPaymentCycle();
 
