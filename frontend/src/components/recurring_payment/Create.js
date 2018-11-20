@@ -81,7 +81,6 @@ class CreatePayment extends Component {
 
     const { name, paymentAmount, notes, owners, paymentCycleType, paymentDate } = this.state;
     const users = owners;
-    let paymentCycle = '';
     // Validate data
     const valid = FormatTools.validateRecurringPaymentData(this.state.name, this.state.paymentAmount, this.state.owners, this);
     if (!valid) {
@@ -89,12 +88,7 @@ class CreatePayment extends Component {
     }
 
     // Convert payment cycle to correct enum
-    if (paymentCycleType === "Monthly")
-      paymentCycle = "MONTHLY";
-    else if (paymentCycleType === "Yearly")
-      paymentCycle = "YEARLY";
-    else
-      paymentCycle = "FIXED_DAYS";
+    const paymentCycle = FormatTools.convertPaymentCycleTypeToRaw(paymentCycleType);
 
     const header = ApiTools.getDefaultHeader();
     const nextPaymentDate = paymentDate.format("YYYY-MM-DD")
@@ -119,7 +113,7 @@ class CreatePayment extends Component {
               <p><Link to={AppConstants.PATH_RECURRING_PAYMENT_INDEX}><span className="glyphicon glyphicon-th-list" aria-hidden="true"></span> Recurring Payments List</Link></p>
               <form onSubmit={this.onSubmit}>
                 <div className="form-group">
-                  <label htmlFor="name">Item Name:</label>
+                  <label htmlFor="name">Payment Name:</label>
                   <input type="text" className={"form-control" + (this.state.validField.name ? "" : " is-invalid")} name="name" value={name} onChange={this.onChange} placeholder="Payment Name" />
                   <div className="invalid-feedback">
                     Please enter a name for the payment.

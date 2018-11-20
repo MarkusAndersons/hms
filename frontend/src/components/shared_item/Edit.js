@@ -58,8 +58,8 @@ class EditItem extends Component {
   }
 
   onOwnershipChange = (e) => {
-    const state = this.state.item;
-    state["owners"][e.target.name.substr(0, e.target.name.length - 11)] = Number(e.target.value);
+    const state = this.state;
+    state.item["owners"][e.target.name.substr(0, e.target.name.length - 11)] = Number(e.target.value);
     this.setState(state);
     FormatTools.validateItemData(this.state.item.name, this.state.item.price, this.state.item.owners, this);
   }
@@ -87,7 +87,7 @@ class EditItem extends Component {
           <div className="panel panel-default">
             <div className="panel-heading">
               <h3 className="panel-title">
-                Edit User
+                Edit Item
               </h3>
             </div>
             <div className="panel-body">

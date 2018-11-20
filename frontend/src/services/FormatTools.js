@@ -152,4 +152,32 @@ const validateRecurringPaymentData = (name, paymentAmount, owners, self) => {
   return valid;
 }
 
-export {formatPrice, formatDueDate, formatOwnership, validateItemData, validateRecurringPaymentData};
+/**
+ * Convert a payment cycle from the API to the type for a dropdown
+ * @param {String} paymentCycle is the paymentCycle string from the payment object
+ */
+const convertPaymentCycleToType = (paymentCycle) => {
+  if (paymentCycle === "MONTHLY") return "Monthly";
+  if (paymentCycle === "YEARLY") return "Yearly";
+  return "Every X days";
+}
+
+/**
+ * Convert a dropdown value for payment cycle to the raw type
+ * @param {String} paymentCycleType is the paymentCycleType from the dropdown
+ */
+const convertPaymentCycleTypeToRaw = (paymentCycleType) => {
+  if (paymentCycleType === "Monthly") return "MONTHLY";
+  if (paymentCycleType === "Yearly") return "YEARLY";
+  return "FIXED_DAYS";
+}
+
+export {
+  formatPrice,
+  formatDueDate,
+  formatOwnership,
+  validateItemData,
+  validateRecurringPaymentData,
+  convertPaymentCycleToType,
+  convertPaymentCycleTypeToRaw
+};

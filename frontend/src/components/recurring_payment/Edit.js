@@ -20,17 +20,21 @@ import AppConstants from '../../AppConstants';
 import * as ApiTools from '../../services/ApiTools';
 import * as FormatTools from '../../services/FormatTools';
 import Layout from '../Layout';
+import { SingleDatePicker } from 'react-dates';
+import moment from 'moment';
 
 class EditPayment extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      item: {},
+      payment: {},
       users: [],
+      daysFieldRequired: false,
+      focused: false,
       validField: {
         name: true,
         notes: true,
-        price: true,
+        paymentAmount: true,
         ownership: true
       }
     };
@@ -38,11 +42,13 @@ class EditPayment extends Component {
 
   componentDidMount() {
     const header = ApiTools.getDefaultHeader();
-    axios.get(AppConstants.API_ITEMS_ITEM + '/' + this.props.match.params.id, {headers: header})
+    axios.get(AppConstants.API_PAYMENT_PAYMENT + '/' + this.props.match.params.id, {headers: header})
       .then(res => {
         let data = res.data;
         data.ownership = null;
-        this.setState({ item: data});
+        data.paymentCycleType = FormatTools.convertPaymentCycleToType(data.paymentCycle);
+        data.paymentDate = moment(data.nextPaymentDate)
+        this.setState({ payment: data});
       });
     axios.get(AppConstants.API_USERS_LIST, {headers: header})
       .then(res => {
@@ -51,73 +57,112 @@ class EditPayment extends Component {
   }
 
   onChange = (e) => {
-    const state = this.state.item;
-    state[e.target.name] = e.target.value;
-    this.setState({ item: state });
-    FormatTools.validateItemData(this.state.item.name, this.state.item.price, this.state.item.owners, this);
+    const state = this.state;
+    state.payment[e.target.name] = e.target.value;
+    state['daysFieldRequired'] = state.payment.paymentCycleType !== "Monthly" && state.payment.paymentCycleType !== "Yearly";
+    this.setState(state);
+    FormatTools.validateRecurringPaymentData(this.state.payment.name, this.state.payment.paymentAmount, this.state.payment.users, this);
+  }
+
+  onDateChange = (date) => {
+    const state = this.state;
+    state.payment.paymentDate = date;
+    this.setState(state);
   }
 
   onOwnershipChange = (e) => {
-    const state = this.state.item;
-    state["owners"][e.target.name.substr(0, e.target.name.length - 11)] = Number(e.target.value);
+    const state = this.state;
+    state.payment["users"][e.target.name.substr(0, e.target.name.length - 11)] = Number(e.target.value);
     this.setState(state);
-    FormatTools.validateItemData(this.state.item.name, this.state.item.price, this.state.item.owners, this);
+    FormatTools.validateRecurringPaymentData(this.state.payment.name, this.state.payment.paymentAmount, this.state.payment.users, this);
   }
 
   onSubmit = (e) => {
     e.preventDefault();
 
-    const valid = FormatTools.validateItemData(this.state.item.name, this.state.item.price, this.state.item.owners, this);
+    const valid = FormatTools.validateRecurringPaymentData(this.state.payment.name, this.state.payment.paymentAmount, this.state.payment.users, this);
     if (!valid) {
       return;
     }
-    const { name, notes, price, owners } = this.state.item;
+    const { name, notes, paymentAmount, paymentCycleType, paymentDate, users } = this.state.payment;
+
+    const paymentCycle = FormatTools.convertPaymentCycleTypeToRaw(paymentCycleType);
+    const nextPaymentDate = paymentDate.format("YYYY-MM-DD")
 
     const header = ApiTools.getDefaultHeader();
-    axios.put(AppConstants.API_ITEMS_ITEM + '/' + this.props.match.params.id, { name, notes, price, owners }, {headers: header})
+    axios.put(AppConstants.API_PAYMENT_PAYMENT + '/' + this.props.match.params.id, { name, notes, paymentAmount, paymentCycle, nextPaymentDate, users }, {headers: header})
       .then((result) => {
-        this.props.history.push(AppConstants.PATH_ITEM_SHOW + '/' + this.props.match.params.id)
+        this.props.history.push(AppConstants.PATH_RECURRING_PAYMENT_SHOW + '/' + this.props.match.params.id)
       });
   }
 
   render() {
+    const { daysFieldRequired } = this.state;
     return (
       <Layout>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">
               <h3 className="panel-title">
-                Edit User
+                Edit Payment
               </h3>
             </div>
             <div className="panel-body">
-              <p><Link to={AppConstants.PATH_ITEM_SHOW + '/' + this.state.item.id}><span className="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Item Details</Link></p>
+              <p><Link to={AppConstants.PATH_RECURRING_PAYMENT_SHOW + '/' + this.state.payment.id}><span className="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Payment Details</Link></p>
               <form onSubmit={this.onSubmit}>
                 <div className="form-group">
-                  <label htmlFor="name">Item Name:</label>
-                  <input type="text" className={"form-control" + (this.state.validField.name ? "" : " is-invalid")} name="name" value={this.state.item.name} onChange={this.onChange} placeholder="Item Name" />
+                  <label htmlFor="name">Payment Name:</label>
+                  <input type="text" className={"form-control" + (this.state.validField.name ? "" : " is-invalid")} name="name" value={this.state.payment.name} onChange={this.onChange} placeholder="Payment Name" />
                   <div className="invalid-feedback">
-                    Please enter an item name.
+                    Please enter a name for the payment.
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="price">Price:</label>
-                  <input type="number" step="any" className={"form-control" + (this.state.validField.price ? "" : " is-invalid")} name="price" value={this.state.item.price} onChange={this.onChange} placeholder="Price" />
+                  <label htmlFor="paymentAmount">Payment Amount:</label>
+                  <input type="number" step="any" className={"form-control" + (this.state.validField.paymentAmount ? "" : " is-invalid")} name="paymentAmount" value={this.state.payment.paymentAmount} onChange={this.onChange} placeholder="Payment Amount" />
                   <div className="invalid-feedback">
-                    Please enter a price for the item.
+                    Please enter a payment amount.
                   </div>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="paymentCycleType">Notes:</label>
+                  <select className="form-control" name="paymentCycleType" value={this.state.payment.paymentCycleType} onChange={this.onChange}>
+                    <option>Monthly</option>
+                    <option>Every X days</option>
+                    <option>Yearly</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  {daysFieldRequired ? ([
+                    <label htmlFor="paymentDays">Days Between Payments:</label>,
+                    <input type="number" step="1" className={"form-control" + (this.state.validField.paymentAmount ? "" : " is-invalid")} name="paymentDays" value={this.state.payment.paymentDays} onChange={this.onChange} placeholder="Payment Days" />,
+                    <div className="invalid-feedback">
+                      Please enter a valid number of days between payments.
+                    </div>
+                  ]) : null}
+                </div>
+                <div className="form-group">
+                  <label htmlFor="paymentDate">Next Payment Date:</label>
+                  <SingleDatePicker
+                    date={this.state.payment.paymentDate}
+                    onDateChange={date => this.onDateChange(date)}
+                    focused={this.state.focused}
+                    onFocusChange={({ focused }) => this.setState({ focused })}
+                    id="paymentDate"
+                    displayFormat="DD/MM/YYYY"
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="notes">Notes:</label>
-                  <textarea type="text" className="form-control" name="notes" value={this.state.item.notes} onChange={this.onChange} placeholder="Notes" />
+                  <textarea type="text" className="form-control" name="notes" value={this.state.payment.notes} onChange={this.onChange} placeholder="Notes" />
                 </div>
                 <div>
                   <label>Ownership Percentages:</label>
-                  {this.state.users.map(u =>
+                  {console.log(this.state.users)}{this.state.users.map(u =>
                     <div key={u.id} className="form-group row">
                       <label htmlFor={u.id + "_percentage"} className="col-sm-2 col-form-label">{u.name}</label>
                       <div className="col-sm-10">
-                        <input type="number" step="any" className={"form-control" + (this.state.validField.ownership ? "" : " is-invalid")} name={u.id + "_percentage"} value={this.state.item.owners[u.id]} onChange={this.onOwnershipChange} placeholder="%" />
+                        <input type="number" step="any" className={"form-control" + (this.state.validField.ownership ? "" : " is-invalid")} name={u.id + "_percentage"} value={this.state.payment.users[u.id]} onChange={this.onOwnershipChange} placeholder="%" />
                         <div className="row invalid-feedback">
                           All percentages must add to 100%.
                         </div>
