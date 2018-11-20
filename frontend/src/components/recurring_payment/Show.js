@@ -59,7 +59,7 @@ class ShowPayment extends Component {
 
   render() {
     return (
-      <Layout>
+      <Layout componentIndex={AppConstants.COMPONENT_PAYMENTS}>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">

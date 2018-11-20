@@ -101,7 +101,7 @@ class CreatePayment extends Component {
   render() {
     const { name, notes, paymentAmount, paymentCycleType, paymentDays, daysFieldRequired, owners } = this.state;
     return (
-      <Layout>
+      <Layout componentIndex={AppConstants.COMPONENT_PAYMENTS}>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">

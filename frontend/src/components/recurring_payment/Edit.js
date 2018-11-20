@@ -99,7 +99,7 @@ class EditPayment extends Component {
   render() {
     const { daysFieldRequired } = this.state;
     return (
-      <Layout>
+      <Layout componentIndex={AppConstants.COMPONENT_PAYMENTS}>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">

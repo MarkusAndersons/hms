@@ -15,6 +15,11 @@
  */
 
 export default Object.freeze({
+  // Component Indices
+  COMPONENT_USERS: 1,
+  COMPONENT_ITEMS: 2,
+  COMPONENT_PAYMENTS: 3,
+
   // API paths
   API_LOGIN: "/api/login",
   API_USERS_LIST: "/api/users/list",

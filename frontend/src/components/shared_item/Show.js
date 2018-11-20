@@ -48,7 +48,7 @@ class ShowItem extends Component {
 
   render() {
     return (
-      <Layout>
+      <Layout componentIndex={AppConstants.COMPONENT_ITEMS}>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">

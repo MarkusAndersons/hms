@@ -52,7 +52,7 @@ class CreateUser extends Component {
   render() {
     const { firstName, surname, phone, email } = this.state;
     return (
-      <Layout>
+      <Layout componentIndex={AppConstants.COMPONENT_USERS}>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">

@@ -15,17 +15,37 @@
  */
 
 import React, { Component } from 'react';
-import logo from '../logo.svg';
+import {Link} from "react-router-dom";
+import AppConstants from '../AppConstants';
 
 class Layout extends Component {
+  navLinkClass(componentIndex) {
+    if (componentIndex === this.props.componentIndex) return "nav-item active"
+    return "nav-item";
+  }
 
   render() {
     return (
       // <div className="App">
       <div>
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+            <Link to="/" className="navbar-brand">Housemate Management System</Link>
+
+            <div className="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul className="navbar-nav mr-auto">
+                <li className={this.navLinkClass(AppConstants.COMPONENT_USERS)}>
+                  <Link className="nav-link" to={AppConstants.PATH_USER_INDEX}>Users</Link>
+                </li>
+                <li className={this.navLinkClass(AppConstants.COMPONENT_ITEMS)}>
+                  <Link className="nav-link" to={AppConstants.PATH_ITEM_INDEX}>Shared Items</Link>
+                </li>
+                <li className={this.navLinkClass(AppConstants.COMPONENT_PAYMENTS)}>
+                  <Link className="nav-link" to={AppConstants.PATH_RECURRING_PAYMENT_INDEX}>Recurring Payments</Link>
+                </li>
+              </ul>
+            </div>
+          </nav>
         </header>
         {this.props.children}
       </div>

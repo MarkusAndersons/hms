@@ -39,7 +39,7 @@ class IndexUser extends Component {
 
   render() {
     return (
-      <Layout>
+      <Layout componentIndex={AppConstants.COMPONENT_USERS}>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">

@@ -15,26 +15,22 @@
  */
 
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import {Link} from "react-router-dom";
+import AppConstants from './AppConstants';
+import Layout from './components/Layout';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        <ul>
-          <li><Link to={`/users/list`}>Users</Link></li>
-          <li><Link to={`/items/list`}>Items</Link></li>
-          <li><Link to={`/recurring_payments/list`}>Recurring Payments</Link></li>
-        </ul>
+        <Layout>
+          <ul>
+            <li><Link to={AppConstants.PATH_USER_INDEX}>Users</Link></li>
+            <li><Link to={AppConstants.PATH_ITEM_INDEX}>Items</Link></li>
+            <li><Link to={AppConstants.PATH_RECURRING_PAYMENT_INDEX}>Recurring Payments</Link></li>
+          </ul>
+        </Layout>
       </div>
     );
   }
