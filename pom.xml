@@ -26,6 +26,11 @@
     <immutables.version>2.6.1</immutables.version>
     <jjwt.version>0.7.0</jjwt.version>
     <lombok.version>1.18.2</lombok.version>
+    <unirest.version>1.4.9</unirest.version>
+    <httpclient.version>4.3.6</httpclient.version>
+    <httpasyncclient.version>4.0.2</httpasyncclient.version>
+    <httpmime.version>4.3.6</httpmime.version>
+    <json.version>20140107</json.version>
   </properties>
 
   <dependencies>
@@ -53,6 +58,31 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.mashape.unirest</groupId>
+      <artifactId>unirest-java</artifactId>
+      <version>${unirest.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>${httpclient.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpasyncclient</artifactId>
+      <version>${httpasyncclient.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpmime</artifactId>
+      <version>${httpmime.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>${json.version}</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>

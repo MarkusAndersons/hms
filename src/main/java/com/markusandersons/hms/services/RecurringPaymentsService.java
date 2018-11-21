@@ -16,10 +16,7 @@
 
 package com.markusandersons.hms.services;
 
-import com.markusandersons.hms.models.PaymentArrangement;
-import com.markusandersons.hms.models.RecurringPayment;
-import com.markusandersons.hms.models.RecurringPaymentJson;
-import com.markusandersons.hms.models.User;
+import com.markusandersons.hms.models.*;
 import com.markusandersons.hms.repositories.PaymentArrangementRepository;
 import com.markusandersons.hms.repositories.RecurringPaymentRepository;
 import com.markusandersons.hms.repositories.UserRepository;
@@ -45,16 +42,19 @@ public class RecurringPaymentsService {
     private final RecurringPaymentRepository recurringPaymentRepository;
     private final UserRepository userRepository;
     private final PaymentArrangementRepository paymentArrangementRepository;
+    private final ReminderEmailService reminderEmailService;
 
     @Autowired
     public RecurringPaymentsService(
         RecurringPaymentRepository recurringPaymentRepository,
         UserRepository userRepository,
-        PaymentArrangementRepository paymentArrangementRepository
+        PaymentArrangementRepository paymentArrangementRepository,
+        ReminderEmailService reminderEmailService
     ) {
         this.recurringPaymentRepository = recurringPaymentRepository;
         this.userRepository = userRepository;
         this.paymentArrangementRepository = paymentArrangementRepository;
+        this.reminderEmailService = reminderEmailService;
     }
 
     public Iterable<RecurringPaymentJson> listSharedItems() {
@@ -67,7 +67,6 @@ public class RecurringPaymentsService {
         return itemOptional.map(JsonUtils::getJson);
     }
 
-    // TODO Handle missing next payment date
     public RecurringPaymentJson createRecurringPayment(RecurringPaymentJson recurringPaymentJson) {
         double totalPercentage = 0;
         List<PaymentArrangement> paymentArrangements = new ArrayList<>();
@@ -76,7 +75,7 @@ public class RecurringPaymentsService {
             if (!user.isPresent()) {
                 throw new WebServiceException("Invalid User ID");
             }
-            paymentArrangements.add(new PaymentArrangement(null, user.get(), entry.getValue()));
+            paymentArrangements.add(new PaymentArrangement(null, user.get(), entry.getValue(), false));
             totalPercentage += entry.getValue();
         }
         if (Math.abs(totalPercentage - 100) > ApplicationConstants.EPSILON) {
@@ -130,14 +129,14 @@ public class RecurringPaymentsService {
             p.setPaymentDays(payment.getPaymentDays().get());
         p.setPaymentAmount(payment.getPaymentAmount());
 
-        if (p.getNextPaymentDate().isBefore(LocalDate.now(ZoneId.of("UTC")))) {
+        if (p.getNextPaymentDate().isBefore(LocalDate.now(ZoneId.of(ApplicationConstants.LOCAL_TIME_ZONE)))) {
             p.calculateNextPaymentDate();
         }
 
         // update payment arrangement
         final Collection<PaymentArrangement> oldOwnership = p.getPaymentArrangements();
         final Collection<PaymentArrangement> newOwnership = payment.getUsers().entrySet().stream()
-            .map(entry -> new PaymentArrangement(p, userRepository.findById(entry.getKey()).get(), entry.getValue()))
+            .map(entry -> new PaymentArrangement(p, userRepository.findById(entry.getKey()).get(), entry.getValue(), false))
             .collect(Collectors.toList());
         p.setPaymentArrangements(newOwnership);
         for (PaymentArrangement paymentArrangement : oldOwnership) {
@@ -151,9 +150,15 @@ public class RecurringPaymentsService {
     public void updateAllPaymentDates() {
         final Iterable<RecurringPayment> payments = recurringPaymentRepository.findAll();
         for (RecurringPayment payment : payments) {
-            if (payment.getNextPaymentDate().isBefore(LocalDate.now(ZoneId.of("UTC")))) {
+            if (payment.getNextPaymentDate().isBefore(LocalDate.now(ZoneId.of(ApplicationConstants.LOCAL_TIME_ZONE)))) {
                 payment.calculateNextPaymentDate();
                 recurringPaymentRepository.save(payment);
+            } else if (payment.getNextPaymentDate().isAfter(LocalDate.now(ZoneId.of(ApplicationConstants.LOCAL_TIME_ZONE)).minusDays(ApplicationConstants.PAYMENT_REMINDER_DAYS))) {
+                try {
+                    reminderEmailService.sendReminderEmail(payment);
+                } catch (EmailSendException e) {
+                    LOGGER.warn("Failed to send reminder email", e);
+                }
             }
         }
     }

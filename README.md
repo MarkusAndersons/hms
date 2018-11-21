@@ -32,5 +32,7 @@ Configure the DB by updating the `spring.datasource` values within the `applicat
 
 Update the value of the JWT secret in com.markusandersons.hms.auth.AuthConstants.
 
+The environment variables `MG_DOMAIN` and `MG_API_KEY` must be set to the domain and API key for a mailgun account to send emails.
+
 ## Notes
 * A default user is currently initialised with username "admin" and password "password". These should be removed from data.sql

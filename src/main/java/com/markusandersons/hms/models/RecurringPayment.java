@@ -16,6 +16,7 @@
 
 package com.markusandersons.hms.models;
 
+import com.markusandersons.hms.util.ApplicationConstants;
 import lombok.Data;
 import org.springframework.lang.Nullable;
 
@@ -78,7 +79,7 @@ public class RecurringPayment {
     }
 
     public void calculateNextPaymentDate() {
-        this.calculateNextPaymentDate(LocalDate.now(ZoneId.of("UTC")));
+        this.calculateNextPaymentDate(LocalDate.now(ZoneId.of(ApplicationConstants.LOCAL_TIME_ZONE)));
     }
 
     public void calculateNextPaymentDate(LocalDate lastPaymentDate) {

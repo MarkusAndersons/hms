@@ -34,17 +34,17 @@ public class PaymentArrangement {
     private RecurringPayment recurringPayment;
     @ManyToOne
     private User user;
-//    @ManyToOne
-//    private Optional<User> personResponsible;   // TODO????
+    private boolean reminderSent;
 
     private double percentage;
 
     public PaymentArrangement() {
     }
 
-    public PaymentArrangement(RecurringPayment recurringPayment, User user, double percentage) {
+    public PaymentArrangement(RecurringPayment recurringPayment, User user, double percentage, boolean reminderSent) {
         this.recurringPayment = recurringPayment;
         this.user = user;
         this.percentage = percentage;
+        this.reminderSent = reminderSent;
     }
 }

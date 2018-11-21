@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package com.markusandersons.hms.util;
+package com.markusandersons.hms.models;
 
-public final class ApplicationConstants {
-    private ApplicationConstants() {
+public class EmailSendException extends Exception {
+    public EmailSendException(String message) {
+        super(message);
     }
 
-    public static final String VERSION = "1.0";
-    public static final double EPSILON = 1e-5;
-    public static final String LOCAL_TIME_ZONE = "Australia/Sydney";
-    public static final long PAYMENT_REMINDER_DAYS = 2;
-    public static final String MG_DOMAIN = System.getenv("MG_DOMAIN");
-    public static final String MG_API_KEY = System.getenv("MG_API_KEY");
+    public EmailSendException(String message, Throwable throwable) {
+        super(message, throwable);
+    }
 }
