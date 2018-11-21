@@ -152,6 +152,9 @@ public class RecurringPaymentsService {
         for (RecurringPayment payment : payments) {
             if (payment.getNextPaymentDate().isBefore(LocalDate.now(ZoneId.of(ApplicationConstants.LOCAL_TIME_ZONE)))) {
                 payment.calculateNextPaymentDate();
+                for (PaymentArrangement paymentArrangement : payment.getPaymentArrangements()) {
+                    paymentArrangement.setReminderSent(false);
+                }
                 recurringPaymentRepository.save(payment);
             } else if (payment.getNextPaymentDate().isAfter(LocalDate.now(ZoneId.of(ApplicationConstants.LOCAL_TIME_ZONE)).minusDays(ApplicationConstants.PAYMENT_REMINDER_DAYS))) {
                 try {
