@@ -24,9 +24,19 @@ class Layout extends Component {
     return "nav-item";
   }
 
+  displayError() {
+    if (this.props.error) {
+      return (
+        <div class="alert alert-danger">
+          {this.props.error}
+        </div>
+      );
+    }
+    return null;
+  }
+
   render() {
     return (
-      // <div className="App">
       <div>
         <header className="App-header">
           <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -47,6 +57,7 @@ class Layout extends Component {
             </div>
           </nav>
         </header>
+        {this.displayError()}
         {this.props.children}
       </div>
     );

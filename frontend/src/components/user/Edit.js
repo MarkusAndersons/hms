@@ -23,15 +23,23 @@ class EditUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: {}
+      user: {},
+      error: null
     };
   }
 
   componentDidMount() {
+    const state = this.state;
     const header = ApiTools.getDefaultHeader();
     axios.get(AppConstants.API_USERS_USER + '/' + this.props.match.params.id, {headers: header})
       .then(res => {
+        state.error = null;
+        this.setState(state);
         this.setState({ user: res.data});
+      })
+      .catch((error) => {
+        state.error = "An error occured getting user (" + String(error) + ")";
+        this.setState(state);
       });
   }
 
@@ -45,17 +53,24 @@ class EditUser extends Component {
     e.preventDefault();
 
     const { firstName, surname, phone, email } = this.state.user;
+    const state = this.state;
 
     const header = ApiTools.getDefaultHeader();
     axios.put(AppConstants.API_USERS_USER + '/' + this.props.match.params.id, { firstName, surname, phone, email }, {headers: header})
       .then((result) => {
+        state.error = null;
+        this.setState(state);
         this.props.history.push(AppConstants.PATH_USER_SHOW + '/' + this.props.match.params.id)
+      })
+      .catch((error) => {
+        state.error = "An error occured editing user (" + String(error) + ")";
+        this.setState(state);
       });
   }
 
   render() {
     return (
-      <Layout componentIndex={AppConstants.COMPONENT_USERS}>
+      <Layout componentIndex={AppConstants.COMPONENT_USERS} error={this.state.error}>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">

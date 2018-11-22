@@ -21,9 +21,12 @@ public final class ApplicationConstants {
     }
 
     public static final String VERSION = "1.0";
-    public static final double EPSILON = 1e-5;
     public static final String LOCAL_TIME_ZONE = "Australia/Sydney";
+    public static final String HOSTNAME = "http://localhost:8080";
+    public static final double EPSILON = 1e-5;
     public static final long PAYMENT_REMINDER_DAYS = 2;
+
+    /* Mailgun Settings */
     public static final String MG_DOMAIN = System.getenv("MG_DOMAIN");
     public static final String MG_API_KEY = System.getenv("MG_API_KEY");
 }

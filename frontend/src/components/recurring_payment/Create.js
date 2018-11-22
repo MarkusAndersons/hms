@@ -43,15 +43,23 @@ class CreatePayment extends Component {
         paymentAmount: true,
         ownership: true
       },
-      focused: false
+      focused: false,
+      error: null
     };
   }
 
   componentDidMount() {
     const header = ApiTools.getDefaultHeader();
+    const state = this.state;
     axios.get(AppConstants.API_USERS_LIST, {headers: header})
       .then(res => {
+        state.error = this.state;
+        this.setState(state);
         this.setState({ users: res.data });
+      })
+      .catch((error) => {
+        state.error = "An error occured getting users (" + String(error) + ")";
+        this.setState(state);
       });
   }
 
@@ -91,17 +99,24 @@ class CreatePayment extends Component {
     const paymentCycle = FormatTools.convertPaymentCycleTypeToRaw(paymentCycleType);
 
     const header = ApiTools.getDefaultHeader();
-    const nextPaymentDate = paymentDate.format("YYYY-MM-DD")
+    const nextPaymentDate = paymentDate.format("YYYY-MM-DD");
+    const state = this.state;
     axios.post(AppConstants.API_PAYMENT_CREATE, { name, paymentAmount, notes, paymentCycle, nextPaymentDate, users }, {headers: header})
       .then((result) => {
+        state.error = null;
+        this.setState(state);
         this.props.history.push(AppConstants.PATH_RECURRING_PAYMENT_INDEX)
+      })
+      .catch((error) => {
+        state.error = "An error occured creating payment (" + String(error) + ")";
+        this.setState(state);
       });
   }
 
   render() {
     const { name, notes, paymentAmount, paymentCycleType, paymentDays, daysFieldRequired, owners } = this.state;
     return (
-      <Layout componentIndex={AppConstants.COMPONENT_PAYMENTS}>
+      <Layout componentIndex={AppConstants.COMPONENT_PAYMENTS} error={this.state.error}>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">

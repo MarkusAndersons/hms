@@ -25,21 +25,29 @@ class IndexUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: []
+      users: [],
+      error: null
     };
   }
 
   componentDidMount() {
+    const state = this.state;
     const header = ApiTools.getDefaultHeader();
     axios.get(AppConstants.API_USERS_LIST, {headers: header})
       .then(res => {
+        state.error = null;
+        this.setState(state);
         this.setState({ users: res.data });
+      })
+      .catch((error) => {
+        state.error = "An error occured getting users (" + String(error) + ")";
+        this.setState(state);
       });
   }
 
   render() {
     return (
-      <Layout componentIndex={AppConstants.COMPONENT_USERS}>
+      <Layout componentIndex={AppConstants.COMPONENT_USERS} error={this.state.error}>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">

@@ -28,7 +28,8 @@ class CreateUser extends Component {
       firstName: '',
       surname: '',
       phone: '',
-      email: ''
+      email: '',
+      error: null
     };
   }
   onChange = (e) => {
@@ -43,16 +44,22 @@ class CreateUser extends Component {
     const { firstName, surname, phone, email } = this.state;
 
     const header = ApiTools.getDefaultHeader();
+    const state = this.state;
     axios.post(AppConstants.API_USERS_CREATE, { firstName, surname, phone, email }, {headers: header})
       .then((result) => {
-        this.props.history.push(AppConstants.PATH_USER_INDEX)
+        state.error = null;
+        this.setState(state);
+        this.props.history.push(AppConstants.PATH_USER_INDEX);
+      }).catch((error) => {
+        state.error = "An error occured creating user (" + String(error) + ")";
+        this.setState(state);
       });
   }
 
   render() {
     const { firstName, surname, phone, email } = this.state;
     return (
-      <Layout componentIndex={AppConstants.COMPONENT_USERS}>
+      <Layout componentIndex={AppConstants.COMPONENT_USERS} error={this.state.error}>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">

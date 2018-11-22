@@ -36,15 +36,23 @@ class CreateItem extends Component {
         notes: true,
         price: true,
         ownership: true
-      }
+      },
+      error: null
     };
   }
 
   componentDidMount() {
     const header = ApiTools.getDefaultHeader();
+    let state = this.state;
     axios.get(AppConstants.API_USERS_LIST, {headers: header})
       .then(res => {
+        state.error = null;
+        this.setState(state);
         this.setState({ users: res.data });
+      })
+      .catch((error) => {
+        state.error = "An error occured getting users (" + String(error) + ")";
+        this.setState(state);
       });
   }
 
@@ -73,16 +81,23 @@ class CreateItem extends Component {
     }
 
     const header = ApiTools.getDefaultHeader();
+    const state = this.state;
     axios.post(AppConstants.API_ITEMS_CREATE, { name, price, notes, owners }, {headers: header})
       .then((result) => {
+        state.error = null;
+        this.setState(state);
         this.props.history.push(AppConstants.PATH_ITEM_INDEX)
+      })
+      .catch((error) => {
+        state.error = "An error occured creating item (" + String(error) + ")";
+        this.setState(state);
       });
   }
 
   render() {
     const { name, notes, price, owners } = this.state;
     return (
-      <Layout componentIndex={AppConstants.COMPONENT_ITEMS}>
+      <Layout componentIndex={AppConstants.COMPONENT_ITEMS} error={this.state.error}>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">

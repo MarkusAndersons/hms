@@ -26,29 +26,44 @@ class ShowItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      item: {}
+      item: {},
+      error: null
     };
   }
 
   componentDidMount() {
     const header = ApiTools.getDefaultHeader();
+    const state = this.state;
     axios.get(AppConstants.API_ITEMS_ITEM + '/' + this.props.match.params.id, {headers: header})
       .then(res => {
+        state.error = null;
+        this.setState(state);
         this.setState({ item: res.data});
+      })
+      .catch((error) => {
+        state.error = "An error occured getting item (" + String(error) + ")";
+        this.setState(state);
       });
   }
 
   delete = (id) => {
     const header = ApiTools.getDefaultHeader();
+    const state = this.state;
     axios.delete(AppConstants.API_ITEMS_ITEM + '/' + id, {headers: header})
       .then((result) => {
+        state.error = null;
+        this.setState(state);
         this.props.history.push(AppConstants.PATH_ITEM_INDEX)
+      })
+      .catch((error) => {
+        state.error = "An error occured deleting item (" + String(error) + ")";
+        this.setState(state);
       });
   }
 
   render() {
     return (
-      <Layout componentIndex={AppConstants.COMPONENT_ITEMS}>
+      <Layout componentIndex={AppConstants.COMPONENT_ITEMS} error={this.state.error}>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">

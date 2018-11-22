@@ -26,15 +26,23 @@ class IndexItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: []
+      items: [],
+      error: null
     };
   }
 
   componentDidMount() {
     const header = ApiTools.getDefaultHeader();
+    const state = this.state;
     axios.get(AppConstants.API_ITEMS_LIST, {headers: header})
       .then(res => {
+        state.error = null;
+        this.setState(state);
         this.setState({ items: res.data });
+      })
+      .catch((error) => {
+        state.error = "An error occured getting items (" + String(error) + ")";
+        this.setState(state);
       });
   }
 
@@ -59,7 +67,7 @@ class IndexItem extends Component {
 
   render() {
     return (
-      <Layout componentIndex={AppConstants.COMPONENT_ITEMS}>
+      <Layout componentIndex={AppConstants.COMPONENT_ITEMS} error={this.state.error}>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">

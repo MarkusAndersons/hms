@@ -26,21 +26,29 @@ class IndexPayment extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      payments: []
+      payments: [],
+      error: null
     };
   }
 
   componentDidMount() {
     const header = ApiTools.getDefaultHeader();
+    const state = this.state;
     axios.get(AppConstants.API_PAYMENT_LIST, {headers: header})
       .then(res => {
+        state.error = null;
+        this.setState(state)
         this.setState({ payments: res.data });
+      })
+      .catch((error) => {
+        state.error = "An error occured getting payments (" + String(error) + ")";
+        this.setState(state);
       });
   }
 
   render() {
     return (
-      <Layout componentIndex={AppConstants.COMPONENT_PAYMENTS}>
+      <Layout componentIndex={AppConstants.COMPONENT_PAYMENTS} error={this.state.error}>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">

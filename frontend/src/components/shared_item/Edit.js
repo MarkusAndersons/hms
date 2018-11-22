@@ -32,21 +32,35 @@ class EditItem extends Component {
         notes: true,
         price: true,
         ownership: true
-      }
+      },
+      error: null
     };
   }
 
   componentDidMount() {
     const header = ApiTools.getDefaultHeader();
+    const state = this.state;
     axios.get(AppConstants.API_ITEMS_ITEM + '/' + this.props.match.params.id, {headers: header})
       .then(res => {
         let data = res.data;
         data.ownership = null;
+        state.error = null;
+        this.setState(state);
         this.setState({ item: data});
+      })
+      .catch((error) => {
+        state.error = "An error occured getting item (" + String(error) + ")";
+        this.setState(state);
       });
     axios.get(AppConstants.API_USERS_LIST, {headers: header})
       .then(res => {
+        state.error = null;
+        this.setState(state);
         this.setState({ users: res.data });
+      })
+      .catch((error) => {
+        state.error = "An error occured getting item (" + String(error) + ")";
+        this.setState(state);
       });
   }
 
@@ -72,17 +86,23 @@ class EditItem extends Component {
       return;
     }
     const { name, notes, price, owners } = this.state.item;
-
+    const state = this.state;
     const header = ApiTools.getDefaultHeader();
     axios.put(AppConstants.API_ITEMS_ITEM + '/' + this.props.match.params.id, { name, notes, price, owners }, {headers: header})
       .then((result) => {
+        state.error = null;
+        this.setState(state);
         this.props.history.push(AppConstants.PATH_ITEM_SHOW + '/' + this.props.match.params.id)
+      })
+      .catch((error) => {
+        state.error = "An error occured editing item (" + String(error) + ")";
+        this.setState(state);
       });
   }
 
   render() {
     return (
-      <Layout componentIndex={AppConstants.COMPONENT_ITEMS}>
+      <Layout componentIndex={AppConstants.COMPONENT_ITEMS} error={this.state.error}>
         <div className="container">
           <div className="panel panel-default">
             <div className="panel-heading">
