@@ -16,6 +16,7 @@
 
 package com.markusandersons.hms.services;
 
+import com.markusandersons.hms.models.AccountCredentials;
 import com.markusandersons.hms.models.User;
 import com.markusandersons.hms.models.UserJson;
 import com.markusandersons.hms.repositories.UserRepository;
@@ -23,9 +24,9 @@ import com.markusandersons.hms.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -37,6 +38,7 @@ public class UserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -50,6 +52,9 @@ public class UserService {
 
     public UserJson createUser(UserJson userJson) {
         LOGGER.info("Creating user: " + userJson.toString());
+        if (userJson.getUsername().isPresent() && userRepository.findByUsername(userJson.getUsername().get()).isPresent()) {
+            throw new IllegalArgumentException("Username already exists");
+        }
         final User user = JsonUtils.getUser(userJson);
         userRepository.save(user);
         return JsonUtils.getJson(user);
@@ -86,5 +91,14 @@ public class UserService {
             userRepository.delete(user);
         }
         return "User:" + id.toString() + " deleted";
+    }
+
+    // NOTE: will need to log out of web app to remove stored token
+    public String updatePassword(AccountCredentials accountCredentials) {
+        final Optional<User> optionalUser = userRepository.findByUsername(accountCredentials.getUsername());
+        if (!optionalUser.isPresent()) throw new IllegalArgumentException("Cannot find given user");
+        final User user = optionalUser.get();
+        user.setPassword(bCryptPasswordEncoder.encode(accountCredentials.getPassword()));
+        return accountCredentials.getUsername() + " - password updated";
     }
 }

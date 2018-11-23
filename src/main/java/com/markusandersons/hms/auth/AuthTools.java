@@ -35,6 +35,7 @@ public class AuthTools {
     }
 
     public int getAuthorizations(Principal principal) {
+        if (principal == null) return 0;
         final Optional<User> optionalUser = userRepository.findByUsername(principal.getName());
         return optionalUser.map(User::getAuthorizationScope).orElse(0);
     }

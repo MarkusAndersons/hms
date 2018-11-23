@@ -19,6 +19,7 @@ package com.markusandersons.hms.controllers;
 import com.markusandersons.hms.auth.AuthConstants;
 import com.markusandersons.hms.auth.AuthTools;
 import com.markusandersons.hms.auth.AuthorizationException;
+import com.markusandersons.hms.models.AccountCredentials;
 import com.markusandersons.hms.models.UserJson;
 import com.markusandersons.hms.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +68,13 @@ public class UserController {
     public String delete(Principal principal, @PathVariable UUID id) {
         if ((authTools.getAuthorizations(principal) & AuthConstants.MODIFY_USERS) != 0)
             return userService.deleteUser(id);
-        throw new AuthorizationException("Cannot create new user!");
+        throw new AuthorizationException("Cannot delete user!");
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/update_password")
+    public String updatePassword(Principal principal, @RequestBody AccountCredentials accountCredentials) {
+        if (principal != null && principal.getName().equals(accountCredentials.getUsername()))
+            return userService.updatePassword(accountCredentials);
+        throw new AuthorizationException("Cannot change password for a different account");
     }
 }
