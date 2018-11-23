@@ -64,14 +64,15 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
         HttpServletResponse res, FilterChain chain,
         Authentication auth
     ) throws IOException, ServletException {
+        final Date expirationTime = new Date(System.currentTimeMillis() + AuthConstants.EXPIRATIONTIME);
         final String jwt = Jwts.builder()
             .setSubject(auth.getName())
-            .setExpiration(new Date(System.currentTimeMillis() + AuthConstants.EXPIRATIONTIME))
+            .setExpiration(expirationTime)
             .signWith(SignatureAlgorithm.HS512, AuthConstants.SECRET)
             .compact();
         res.addHeader(AuthConstants.HEADER_STRING, AuthConstants.TOKEN_PREFIX + " " + jwt);
         res.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        res.getOutputStream().print("{\"token\":\"" + jwt + "\"}");
+        res.getOutputStream().print("{\"token\":\"" + jwt + "\",\"username\":\"" + auth.getName() + "\",\"expires\":\"" + expirationTime.toString() + "\"}");
         res.getOutputStream().flush();
     }
 }

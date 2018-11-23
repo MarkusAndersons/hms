@@ -29,8 +29,10 @@ public class User {
     @Id
     @GeneratedValue
     private UUID id;
+    @Column(unique = true)
     private String username;
     private String password;
+    private int authorizationScope;
     private String firstName;
     private String surname;
     private String phone;
@@ -50,6 +52,7 @@ public class User {
         String surname,
         String phone,
         String email,
+        int authorizationScope,
         Collection<Ownership> ownership,
         Collection<PaymentArrangement> paymentArrangements
     ) {
@@ -59,6 +62,7 @@ public class User {
         this.surname = surname;
         this.phone = phone;
         this.email = email;
+        this.authorizationScope = authorizationScope;
         this.ownership = ownership;
         this.paymentArrangements = paymentArrangements;
     }

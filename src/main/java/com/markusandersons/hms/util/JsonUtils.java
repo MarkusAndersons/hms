@@ -17,6 +17,7 @@
 package com.markusandersons.hms.util;
 
 import com.markusandersons.hms.models.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -24,6 +25,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class JsonUtils {
+
+    private static final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
     private JsonUtils() {
     }
 
@@ -35,6 +38,7 @@ public class JsonUtils {
             .name(user.getName())
             .email(user.getEmail())
             .phone(user.getPhone())
+            .username(Optional.ofNullable(user.getUsername()))
             .putAllItems(user.getOwnership().stream().collect(
                 Collectors.toMap(i -> i.getSharedItem().getId(), Ownership::getPercentage)))
             .putAllRecurringPayments(user.getPaymentArrangements().stream().collect(
@@ -75,13 +79,18 @@ public class JsonUtils {
     }
 
     public static User getUser(UserJson userJson) {
+        String encodedPassword = null;
+        if (userJson.getPassword().isPresent()) {
+            encodedPassword = bCryptPasswordEncoder.encode(userJson.getPassword().get());
+        }
         return new User(
-            null,
-            null,
+            userJson.getUsername().orElse(null),
+            encodedPassword,
             userJson.getFirstName(),
             userJson.getSurname(),
             userJson.getPhone(),
             userJson.getEmail(),
+            0,
             Collections.emptyList(),
             Collections.emptyList()
         );

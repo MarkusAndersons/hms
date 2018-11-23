@@ -1,9 +1,9 @@
 -- Create test users
-INSERT INTO users (id, email, first_name, surname, phone, username, password)
-VALUES ('676DF5C1-2243-4B4C-B1F7-07266BF9AC22', 'test@test.com', 'Default', 'User', '+614000000000', 'admin', '$2a$10$5UFZYUnDrmQ9jM0.8m1Ma.WuRIr8pYd6gbBPvbV2kM9uyJ3YLlkBe');
+INSERT INTO users (id, email, first_name, surname, phone, username, password, authorization_scope)
+VALUES ('676DF5C1-2243-4B4C-B1F7-07266BF9AC22', 'test@test.com', 'Default', 'User', '+614000000000', 'admin', '$2a$10$5UFZYUnDrmQ9jM0.8m1Ma.WuRIr8pYd6gbBPvbV2kM9uyJ3YLlkBe', -1);
 
-INSERT INTO users (id, email, first_name, surname, phone, username, password)
-VALUES ('D30D3AF2-FC13-4934-88B5-6940788B46C2', 'markus.andersons@test.com', 'Markus', 'Andersons', '+614000000001', null, null);
+INSERT INTO users (id, email, first_name, surname, phone, username, password, authorization_scope)
+VALUES ('D30D3AF2-FC13-4934-88B5-6940788B46C2', 'markus.andersons@test.com', 'Markus', 'Andersons', '+614000000001', null, null, 0);
 
 -- Create test item
 INSERT INTO shared_item (id, name, notes, price)

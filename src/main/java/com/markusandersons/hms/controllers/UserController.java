@@ -16,11 +16,15 @@
 
 package com.markusandersons.hms.controllers;
 
+import com.markusandersons.hms.auth.AuthConstants;
+import com.markusandersons.hms.auth.AuthTools;
+import com.markusandersons.hms.auth.AuthorizationException;
 import com.markusandersons.hms.models.UserJson;
 import com.markusandersons.hms.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,10 +33,12 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+    private final AuthTools authTools;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthTools authTools) {
         this.userService = userService;
+        this.authTools = authTools;
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/list")
@@ -41,8 +47,10 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/create")
-    public UserJson create(@RequestBody UserJson user) {
-        return userService.createUser(user);
+    public UserJson create(Principal principal, @RequestBody UserJson user) {
+        if ((authTools.getAuthorizations(principal) & AuthConstants.MODIFY_USERS) != 0)
+            return userService.createUser(user);
+        throw new AuthorizationException("Cannot create new user!");
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/user/{id}")
@@ -56,7 +64,9 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/user/{id}")
-    public String delete(@PathVariable UUID id) {
-        return userService.deleteUser(id);
+    public String delete(Principal principal, @PathVariable UUID id) {
+        if ((authTools.getAuthorizations(principal) & AuthConstants.MODIFY_USERS) != 0)
+            return userService.deleteUser(id);
+        throw new AuthorizationException("Cannot create new user!");
     }
 }

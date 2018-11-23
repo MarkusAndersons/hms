@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package com.markusandersons.hms.auth;
+package com.markusandersons.hms.repositories;
 
-public class AuthConstants {
-    public static final long EXPIRATIONTIME = 864_000_000; // 10 days
-    public static final String SECRET = "jO9zrMFCPeITSGD8QGcLYmylQh_qkGEpRZwQDNKrl1o";
-    public static final String TOKEN_PREFIX = "Bearer";
-    public static final String HEADER_STRING = "Authorization";
+import com.markusandersons.hms.models.ArchiveEvent;
+import org.springframework.data.repository.CrudRepository;
 
-    /* User Authorization Scopes */
-    public static final int SERVER_ADMIN = 1;
-    public static final int MODIFY_USERS = 2;
-    public static final int DELETE_DATA = 4;
+import java.util.UUID;
 
-    public static final int SUPERUSER = -1;
+public interface ArchivingRepository extends CrudRepository<ArchiveEvent, UUID> {
 }

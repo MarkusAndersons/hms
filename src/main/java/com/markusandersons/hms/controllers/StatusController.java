@@ -16,22 +16,19 @@
 
 package com.markusandersons.hms.controllers;
 
-import com.markusandersons.hms.auth.AuthConstants;
 import com.markusandersons.hms.models.ImmutableStatusJson;
 import com.markusandersons.hms.models.StatusJson;
 import com.markusandersons.hms.util.ApplicationConstants;
-import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,34 +38,22 @@ public class StatusController {
     private static final Logger LOGGER = LoggerFactory.getLogger(StatusController.class);
 
     @RequestMapping(path = "/status")
-    public StatusJson getStatus(@RequestHeader HttpHeaders headers) {
+    public StatusJson getStatus(Principal principal, @RequestHeader HttpHeaders headers) {
         LOGGER.debug("Status Requested");
         final List<String> authHeaders = headers.get("Authorization");
         final Optional<String> authHeader = authHeaders == null ? Optional.empty() : Optional.of(authHeaders.get(0));
         final String auth;
-        boolean authenticated;
-        String status = "OK";
-        if (authHeader.isPresent()) {
-            // parse the token.
-            String user = null;
-            try {
-                user = Jwts.parser()
-                    .setSigningKey(AuthConstants.SECRET)
-                    .parseClaimsJws(authHeader.get().replace(AuthConstants.TOKEN_PREFIX, ""))
-                    .getBody()
-                    .getSubject();
-                authenticated = true;
-            } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException ex) {
-                authenticated = false;
-                status = "Auth Error: " + ex.toString();
-            }
-            auth = user != null ?
-                new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList()).getPrincipal().toString() :
-                null;
+        final boolean authenticated;
+        final String status;
+
+        if (principal != null) {
+            auth = principal.getName();
+            authenticated = true;
+            status = "OK";
         } else {
             auth = null;
             authenticated = false;
-            status = "Unauthorized";
+            status = "Unauthenticated";
         }
 
         return ImmutableStatusJson.builder()

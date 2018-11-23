@@ -44,4 +44,8 @@ public interface UserJson {
     Map<UUID, Double> getItems();
 
     Map<UUID, Double> getRecurringPayments();
+
+    Optional<String> getUsername();
+
+    Optional<String> getPassword();
 }
