@@ -85,32 +85,32 @@ class ChangePassword extends Component {
     return (
       <Layout componentIndex={null} error={this.state.error}>
         <div className="container">
-        <div className="panel panel-default">
-          <div className="panel-heading">
-            <h3 className="panel-title">
-              Change Password
-            </h3>
-          </div>
-          <div className="panel-body">
-            <form onSubmit={this.onSubmit}>
-              <div className="form-group">
-                <label htmlFor="username">Username:</label>
-                <input type="text" className="form-control" name="username" value={username} onChange={this.onChange} placeholder="Username" />
-              </div>
-              <div className="form-group">
-                <label htmlFor="password">Current Password:</label>
-                <input type="password" className="form-control" name="password" value={password} onChange={this.onChange} placeholder="Current Password" />
-              </div>
-              <div className="form-group">
-                <label htmlFor="newPassword">New Password:</label>
-                <input type="password" className="form-control" name="newPassword" value={newPassword} onChange={this.onChange} placeholder="New Password" />
-              </div>
-              <button type="submit" className="btn btn-default">Submit</button>
-            </form>
+          <div className="panel panel-default">
+            <div className="panel-heading">
+              <h3 className="panel-title">
+                Change Password
+              </h3>
+            </div>
+            <div className="panel-body">
+              <form onSubmit={this.onSubmit}>
+                <div className="form-group">
+                  <label htmlFor="username">Username:</label>
+                  <input type="text" className="form-control" name="username" value={username} onChange={this.onChange} placeholder="Username" />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="password">Current Password:</label>
+                  <input type="password" className="form-control" name="password" value={password} onChange={this.onChange} placeholder="Current Password" />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="newPassword">New Password:</label>
+                  <input type="password" className="form-control" name="newPassword" value={newPassword} onChange={this.onChange} placeholder="New Password" />
+                </div>
+                <button type="submit" className="btn btn-default">Submit</button>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
     );
   }
 }
