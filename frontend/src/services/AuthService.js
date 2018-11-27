@@ -25,17 +25,18 @@ class AuthService {
   static removeToken() {
     localStorage.removeItem("token");
     localStorage.setItem("authenticated", false);
-    localStorage.setItem("auth_time", Date.now())
+    localStorage.removeItem("username");
   }
 
   /**
    * Store the given access token
    * @param {string} token the access token
    */
-  static storeToken(token) {
+  static storeToken(username, token) {
     localStorage.setItem("token", token);
     localStorage.setItem("authenticated", true);
-    localStorage.setItem("auth_time", Date.now())
+    localStorage.setItem("auth_time", Date.now());
+    localStorage.setItem("username", username);
   }
 
   /**
@@ -53,6 +54,14 @@ class AuthService {
       }
     }
     return false;
+  }
+
+  /**
+   * Get the username of the currently logged in user
+   * @returns string, the username or null
+   */
+  static getUsername() {
+    return localStorage.getItem("username");
   }
 
   /**

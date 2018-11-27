@@ -29,6 +29,8 @@ class CreateUser extends Component {
       surname: '',
       phone: '',
       email: '',
+      username: '',
+      password: '',
       error: null
     };
   }
@@ -41,11 +43,11 @@ class CreateUser extends Component {
   onSubmit = (e) => {
     e.preventDefault();
 
-    const { firstName, surname, phone, email } = this.state;
+    const { firstName, surname, phone, email, username, password } = this.state;
 
     const header = ApiTools.getDefaultHeader();
     const state = this.state;
-    axios.post(AppConstants.API_USERS_CREATE, { firstName, surname, phone, email }, {headers: header})
+    axios.post(AppConstants.API_USERS_CREATE, { firstName, surname, phone, email, username, password }, {headers: header})
       .then((result) => {
         state.error = null;
         this.setState(state);
@@ -57,7 +59,7 @@ class CreateUser extends Component {
   }
 
   render() {
-    const { firstName, surname, phone, email } = this.state;
+    const { firstName, surname, phone, email, username, password } = this.state;
     return (
       <Layout componentIndex={AppConstants.COMPONENT_USERS} error={this.state.error}>
         <div className="container">
@@ -70,6 +72,14 @@ class CreateUser extends Component {
             <div className="panel-body">
               <p><Link to={AppConstants.PATH_USER_INDEX}><span className="glyphicon glyphicon-th-list" aria-hidden="true"></span> User List</Link></p>
               <form onSubmit={this.onSubmit}>
+                <div className="form-group">
+                  <label for="username">Username:</label>
+                  <input type="text" className="form-control" name="username" value={username} onChange={this.onChange} placeholder="Username" />
+                </div>
+                <div className="form-group">
+                  <label for="password">Password:</label>
+                  <input type="password" className="form-control" name="password" value={password} onChange={this.onChange} placeholder="Password" />
+                </div>
                 <div className="form-group">
                   <label for="firstName">First Name:</label>
                   <input type="text" className="form-control" name="firstName" value={firstName} onChange={this.onChange} placeholder="First Name" />

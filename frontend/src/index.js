@@ -17,10 +17,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
+import AppConstants from './AppConstants';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
+import 'bootstrap/js/dist/collapse';
 import App from './App';
 import IndexUser from './components/user/Index';
 import EditUser from './components/user/Edit';
@@ -37,14 +39,18 @@ import IndexPayment from './components/recurring_payment/Index';
 import EditPayment from './components/recurring_payment/Edit';
 import CreatePayment from './components/recurring_payment/Create';
 import ShowPayment from './components/recurring_payment/Show';
+import Settings from './components/settings/Settings';
+import ChangePassword from './components/settings/ChangePassword';
 
 
 ReactDOM.render(
   <BrowserRouter>
     <div>
       <PrivateRoute exact path='/' component={App} />
-      <Route path='/login' component={Login} />
-      <Route path='/logout' component={Logout} />
+      <Route path={AppConstants.PATH_LOGIN} component={Login} />
+      <Route path={AppConstants.PATH_LOGOUT} component={Logout} />
+      <PrivateRoute path={AppConstants.PATH_SETTINGS} component={Settings} />
+      <PrivateRoute path={AppConstants.PATH_SETTINGS_CHANGE_PASSWORD} component={ChangePassword} />
       <PrivateRoute path='/users/list' component={IndexUser} />
       <PrivateRoute path='/users/edit/:id' component={EditUser} />
       <PrivateRoute path='/users/create' component={CreateUser} />

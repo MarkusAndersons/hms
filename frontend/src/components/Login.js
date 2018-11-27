@@ -18,6 +18,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import AppConstants from '../AppConstants';
 import AuthService from '../services/AuthService';
+import Layout from './Layout';
 
 class Login extends Component {
   constructor(props) {
@@ -63,7 +64,7 @@ class Login extends Component {
       .then((result) => {
         const token = result.data.token;
         if (token) {
-          AuthService.storeToken(token);
+          AuthService.storeToken(username, token);
         } else {
           // TODO
         }
@@ -84,31 +85,30 @@ class Login extends Component {
   render() {
     const { username, password } = this.state;
     return (
-      <div class="container">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">
-            Login
-          </h3>
-        </div>
-        <div class="panel-body">
-          <form onSubmit={this.onSubmit}>
-            <div class="form-group">
-              <label for="username">Username:</label>
-              <input type="text" class="form-control" name="username" value={username} onChange={this.onChange} placeholder="Username" />
+      <Layout componentIndex={null} error={this.state.error}>
+        <div className="container">
+          <div className="panel panel-default">
+            <div className="panel-heading">
+              <h3 className="panel-title">
+                Login
+              </h3>
             </div>
-            <div class="form-group">
-              <label for="password">Password:</label>
-              <input type="password" class="form-control" name="password" value={password} onChange={this.onChange} placeholder="Password" />
+            <div className="panel-body">
+              <form onSubmit={this.onSubmit}>
+                <div className="form-group">
+                  <label htmlFor="username">Username:</label>
+                  <input type="text" className="form-control" name="username" value={username} onChange={this.onChange} placeholder="Username" />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="password">Password:</label>
+                  <input type="password" className="form-control" name="password" value={password} onChange={this.onChange} placeholder="Password" />
+                </div>
+                <button type="submit" className="btn btn-default">Submit</button>
+              </form>
             </div>
-            <button type="submit" class="btn btn-default">Submit</button>
-          </form>
-          {
-            this.state.error ? <div class="alert alert-danger"><p>{this.state.error}</p></div> : null
-          }
+          </div>
         </div>
-      </div>
-    </div>
+      </Layout>
     );
   }
 }

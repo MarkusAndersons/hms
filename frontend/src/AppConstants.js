@@ -31,6 +31,7 @@ export default Object.freeze({
   API_PAYMENT_LIST: "/api/recurring_payments/list",
   API_PAYMENT_CREATE: "/api/recurring_payments/create",
   API_PAYMENT_PAYMENT: "/api/recurring_payments/payment",
+  API_CHANGE_PASSWORD: "/api/users/update_password",
   API_STATUS: "/status",
 
   // Paths
@@ -47,6 +48,9 @@ export default Object.freeze({
   PATH_RECURRING_PAYMENT_SHOW: "/recurring_payments/show",
   PATH_RECURRING_PAYMENT_EDIT: "/recurring_payments/edit",
   PATH_LOGIN: "/login",
+  PATH_LOGOUT: "/logout",
+  PATH_SETTINGS: "/settings/all",
+  PATH_SETTINGS_CHANGE_PASSWORD: "/settings/change_password",
 
   // Constant values
   MAX_AUTH_AGE: 3600000 // Micros

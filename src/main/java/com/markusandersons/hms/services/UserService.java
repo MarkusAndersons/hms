@@ -16,7 +16,8 @@
 
 package com.markusandersons.hms.services;
 
-import com.markusandersons.hms.models.AccountCredentials;
+import com.markusandersons.hms.auth.AuthorizationException;
+import com.markusandersons.hms.models.ChangeAccountCredentials;
 import com.markusandersons.hms.models.User;
 import com.markusandersons.hms.models.UserJson;
 import com.markusandersons.hms.repositories.UserRepository;
@@ -94,11 +95,14 @@ public class UserService {
     }
 
     // NOTE: will need to log out of web app to remove stored token
-    public String updatePassword(AccountCredentials accountCredentials) {
+    public String updatePassword(ChangeAccountCredentials accountCredentials) {
         final Optional<User> optionalUser = userRepository.findByUsername(accountCredentials.getUsername());
         if (!optionalUser.isPresent()) throw new IllegalArgumentException("Cannot find given user");
         final User user = optionalUser.get();
-        user.setPassword(bCryptPasswordEncoder.encode(accountCredentials.getPassword()));
+        if (!bCryptPasswordEncoder.matches(accountCredentials.getPassword(), user.getPassword()))
+            throw new AuthorizationException("Current password does not match");
+        user.setPassword(bCryptPasswordEncoder.encode(accountCredentials.getNewPassword()));
+        userRepository.save(user);
         return accountCredentials.getUsername() + " - password updated";
     }
 }
