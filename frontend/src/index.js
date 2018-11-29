@@ -41,6 +41,8 @@ import CreatePayment from './components/recurring_payment/Create';
 import ShowPayment from './components/recurring_payment/Show';
 import Settings from './components/settings/Settings';
 import ChangePassword from './components/settings/ChangePassword';
+import ShowServerSettings from './components/settings/Show';
+import EditSettings from './components/settings/Edit';
 
 
 ReactDOM.render(
@@ -51,6 +53,8 @@ ReactDOM.render(
       <Route path={AppConstants.PATH_LOGOUT} component={Logout} />
       <PrivateRoute path={AppConstants.PATH_SETTINGS} component={Settings} />
       <PrivateRoute path={AppConstants.PATH_SETTINGS_CHANGE_PASSWORD} component={ChangePassword} />
+      <PrivateRoute path={AppConstants.PATH_SETTINGS_SERVER_SHOW} component={ShowServerSettings} />
+      <PrivateRoute path={AppConstants.PATH_SETTINGS_SERVER_EDIT} component={EditSettings} />
       <PrivateRoute path='/users/list' component={IndexUser} />
       <PrivateRoute path='/users/edit/:id' component={EditUser} />
       <PrivateRoute path='/users/create' component={CreateUser} />

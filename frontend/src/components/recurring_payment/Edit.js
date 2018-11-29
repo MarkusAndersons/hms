@@ -43,28 +43,31 @@ class EditPayment extends Component {
 
   componentDidMount() {
     const header = ApiTools.getDefaultHeader();
-    const state = this.state;
     axios.get(AppConstants.API_PAYMENT_PAYMENT + '/' + this.props.match.params.id, {headers: header})
       .then(res => {
         let data = res.data;
+        const state = this.state;
         data.ownership = null;
         data.paymentCycleType = FormatTools.convertPaymentCycleToType(data.paymentCycle);
         data.paymentDate = moment(data.nextPaymentDate);
         state.error = null;
+        state.payment = data;
         this.setState(state);
-        this.setState({ payment: data});
       })
       .catch((error) => {
+        const state = this.state;
         state.error = "An error occured getting payment (" + String(error) + ")";
         this.setState(state);
       });
     axios.get(AppConstants.API_USERS_LIST, {headers: header})
       .then(res => {
+        const state = this.state;
         state.error = null;
+        state.users = res.data;
         this.setState(state);
-        this.setState({ users: res.data });
       })
       .catch((error) => {
+        const state = this.state;
         state.error = "An error occured getting users (" + String(error) + ")";
         this.setState(state);
       });

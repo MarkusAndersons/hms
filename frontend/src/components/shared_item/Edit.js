@@ -39,26 +39,29 @@ class EditItem extends Component {
 
   componentDidMount() {
     const header = ApiTools.getDefaultHeader();
-    const state = this.state;
     axios.get(AppConstants.API_ITEMS_ITEM + '/' + this.props.match.params.id, {headers: header})
       .then(res => {
         let data = res.data;
+        const state = this.state;
         data.ownership = null;
         state.error = null;
+        state.item = data;
         this.setState(state);
-        this.setState({ item: data});
       })
       .catch((error) => {
+        const state = this.state;
         state.error = "An error occured getting item (" + String(error) + ")";
         this.setState(state);
       });
     axios.get(AppConstants.API_USERS_LIST, {headers: header})
       .then(res => {
+        const state = this.state;
         state.error = null;
+        state.users = res.data;
         this.setState(state);
-        this.setState({ users: res.data });
       })
       .catch((error) => {
+        const state = this.state;
         state.error = "An error occured getting item (" + String(error) + ")";
         this.setState(state);
       });

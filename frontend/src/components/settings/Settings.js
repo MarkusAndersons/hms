@@ -33,6 +33,7 @@ class Settings extends Component {
             <div className="panel-body">
               <ul>
                 <li><Link to={AppConstants.PATH_SETTINGS_CHANGE_PASSWORD}>Change Password</Link></li>
+                <li><Link to={AppConstants.PATH_SETTINGS_SERVER_SHOW}>Server Settings</Link></li>
                 <li><Link to={AppConstants.PATH_LOGOUT}>Logout</Link></li>
               </ul>
             </div>
