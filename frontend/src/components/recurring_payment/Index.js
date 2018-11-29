@@ -53,7 +53,7 @@ class IndexPayment extends Component {
           <div className="panel panel-default">
             <div className="panel-heading">
               <h3 className="panel-title">
-                Item List
+                Payments List
               </h3>
             </div>
             <div className="panel-body">

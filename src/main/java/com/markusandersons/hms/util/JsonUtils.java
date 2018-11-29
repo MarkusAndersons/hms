@@ -16,6 +16,7 @@
 
 package com.markusandersons.hms.util;
 
+import com.markusandersons.hms.auth.AuthConstants;
 import com.markusandersons.hms.models.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 public class JsonUtils {
 
     private static final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
     private JsonUtils() {
     }
 
@@ -43,6 +45,9 @@ public class JsonUtils {
                 Collectors.toMap(i -> i.getSharedItem().getId(), Ownership::getPercentage)))
             .putAllRecurringPayments(user.getPaymentArrangements().stream().collect(
                 Collectors.toMap(p -> p.getRecurringPayment().getId(), PaymentArrangement::getPercentage)))
+            .isServerAdmin((user.getAuthorizationScope() & AuthConstants.SERVER_ADMIN) != 0)
+            .canModifyUsers((user.getAuthorizationScope() & AuthConstants.MODIFY_USERS) != 0)
+            .canDeleteData((user.getAuthorizationScope() & AuthConstants.DELETE_DATA) != 0)
             .build();
     }
 
@@ -78,11 +83,21 @@ public class JsonUtils {
             .build();
     }
 
+    public static ServerSettingsJson getJson(ServerSettings serverSettings) {
+        return ImmutableServerSettingsJson.builder()
+            .hostname(serverSettings.getHostname())
+            .serverTimezone(serverSettings.getServerTimezone())
+            .build();
+    }
+
     public static User getUser(UserJson userJson) {
         String encodedPassword = null;
         if (userJson.getPassword().isPresent()) {
             encodedPassword = bCryptPasswordEncoder.encode(userJson.getPassword().get());
         }
+        final int authorizationScope = (userJson.isServerAdmin() ? AuthConstants.SERVER_ADMIN : 0) |
+            (userJson.canModifyUsers() ? AuthConstants.MODIFY_USERS : 0) |
+            (userJson.canDeleteData() ? AuthConstants.DELETE_DATA : 0);
         return new User(
             userJson.getUsername().orElse(null),
             encodedPassword,
@@ -90,14 +105,9 @@ public class JsonUtils {
             userJson.getSurname(),
             userJson.getPhone(),
             userJson.getEmail(),
-            0,
+            authorizationScope,
             Collections.emptyList(),
             Collections.emptyList()
         );
-    }
-
-    public static SharedItem getSharedItem() {
-        return null;
-        // TODO
     }
 }

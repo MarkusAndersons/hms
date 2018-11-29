@@ -60,6 +60,24 @@ class ShowUser extends Component {
       });
   }
 
+  renderPermissions() {
+    let permissions = "";
+    const user = this.state.user;
+    if (user.isServerAdmin) {
+      permissions += "Server Admin. "
+    }
+    if (user.canModifyUsers) {
+      permissions += "Can Modify Users. "
+    }
+    if (user.canDeleteData) {
+      permissions += "Can Delete Data. "
+    }
+
+    if (permissions === "")
+      return "None";
+    return permissions;
+  }
+
   render() {
     return (
       <Layout componentIndex={AppConstants.COMPONENT_USERS} error={this.state.error}>
@@ -79,6 +97,8 @@ class ShowUser extends Component {
                 <dd>{this.state.user.phone}</dd>
                 <dt>Email Address:</dt>
                 <dd>{this.state.user.email}</dd>
+                <dt>Permissions:</dt>
+                <dd>{this.renderPermissions()}</dd>
               </dl>
               <Link to={AppConstants.PATH_USER_EDIT + '/' + this.state.user.id} className="btn btn-success">Edit</Link>&nbsp;
               <button onClick={this.delete.bind(this, this.state.user.id)}

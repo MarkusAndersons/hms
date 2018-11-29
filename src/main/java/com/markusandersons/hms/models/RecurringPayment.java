@@ -16,13 +16,11 @@
 
 package com.markusandersons.hms.models;
 
-import com.markusandersons.hms.util.ApplicationConstants;
 import lombok.Data;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -49,18 +47,6 @@ public class RecurringPayment {
         String name,
         String notes,
         double paymentAmount,
-        PaymentCycle paymentCycle,
-        Collection<PaymentArrangement> paymentArrangements,
-        Integer paymentDays
-    ) {
-        this(name, notes, paymentAmount, null, paymentCycle, paymentArrangements, paymentDays);
-        calculateNextPaymentDate();
-    }
-
-    public RecurringPayment(
-        String name,
-        String notes,
-        double paymentAmount,
         LocalDate nextPaymentDate,
         PaymentCycle paymentCycle,
         Collection<PaymentArrangement> paymentArrangements,
@@ -76,10 +62,6 @@ public class RecurringPayment {
         this.paymentCycle = paymentCycle;
         this.paymentArrangements = paymentArrangements;
         this.paymentDays = paymentDays;
-    }
-
-    public void calculateNextPaymentDate() {
-        this.calculateNextPaymentDate(LocalDate.now(ZoneId.of(ApplicationConstants.LOCAL_TIME_ZONE)));
     }
 
     public void calculateNextPaymentDate(LocalDate lastPaymentDate) {

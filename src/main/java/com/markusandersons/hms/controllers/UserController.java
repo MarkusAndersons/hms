@@ -19,7 +19,6 @@ package com.markusandersons.hms.controllers;
 import com.markusandersons.hms.auth.AuthConstants;
 import com.markusandersons.hms.auth.AuthTools;
 import com.markusandersons.hms.auth.AuthorizationException;
-import com.markusandersons.hms.models.ChangeAccountCredentials;
 import com.markusandersons.hms.models.UserJson;
 import com.markusandersons.hms.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +52,6 @@ public class UserController {
             return userService.createUser(user);
         throw new AuthorizationException("Cannot create new user!");
     }
-    // TODO: Add authorization scopes to new users
 
     @RequestMapping(method = RequestMethod.GET, value = "/user/{id}")
     public Optional<UserJson> show(@PathVariable UUID id) {
@@ -61,8 +59,8 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/user/{id}")
-    public Optional<UserJson> update(@PathVariable UUID id, @RequestBody UserJson user) {
-        return userService.updateUser(id, user);
+    public Optional<UserJson> update(Principal principal, @PathVariable UUID id, @RequestBody UserJson user) {
+        return userService.updateUser(id, user, (authTools.getAuthorizations(principal) & AuthConstants.MODIFY_USERS) != 0);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/user/{id}")
@@ -70,12 +68,5 @@ public class UserController {
         if ((authTools.getAuthorizations(principal) & AuthConstants.MODIFY_USERS) != 0)
             return userService.deleteUser(id);
         throw new AuthorizationException("Cannot delete user!");
-    }
-
-    @RequestMapping(method = RequestMethod.POST, value = "/update_password")
-    public String updatePassword(Principal principal, @RequestBody ChangeAccountCredentials accountCredentials) {
-        if (principal != null && principal.getName().equals(accountCredentials.getUsername()))
-            return userService.updatePassword(accountCredentials);
-        throw new AuthorizationException("Cannot change password for a different account");
     }
 }

@@ -27,12 +27,20 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ReminderEmailService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReminderEmailService.class);
+
+    private final SettingsService settingsService;
+
+    @Autowired
+    public ReminderEmailService(SettingsService settingsService) {
+        this.settingsService = settingsService;
+    }
 
     public void sendReminderEmail(RecurringPayment recurringPayment) throws EmailSendException {
         try {
@@ -43,7 +51,8 @@ public class ReminderEmailService {
                     "HMS <no-reply@markusandersons.com>",
                     user.getEmail(),
                     "HMS Payment Reminder",
-                    formatTextReminder(recurringPayment, paymentArrangement)
+                    formatTextReminder(recurringPayment, paymentArrangement),
+                    formatHtmlReminder(recurringPayment, paymentArrangement)
                 );
                 paymentArrangement.setReminderSent(true);
             }
@@ -52,13 +61,14 @@ public class ReminderEmailService {
         }
     }
 
-    private JsonNode sendEmail(String fromEmail, String toEmail, String subject, String textMessage) throws UnirestException {
+    private JsonNode sendEmail(String fromEmail, String toEmail, String subject, String textMessage, String htmlMessage) throws UnirestException {
         final HttpResponse<JsonNode> request = Unirest.post("https://api.mailgun.net/v3/" + ApplicationConstants.MG_DOMAIN + "/messages")
             .basicAuth("api", ApplicationConstants.MG_API_KEY)
             .queryString("from", fromEmail)
             .queryString("to", toEmail)
             .queryString("subject", subject)
             .queryString("text", textMessage)
+            .queryString("html", htmlMessage)
             .asJson();
         return request.getBody();
     }
@@ -71,6 +81,23 @@ public class ReminderEmailService {
             + ". You owe "
             + String.format("$%.2f", recurringPayment.getPaymentAmount() * 0.01 * paymentArrangement.getPercentage())
             + " (" + String.format("%.2f", paymentArrangement.getPercentage()) + "% of " + String.format("$%.2f", recurringPayment.getPaymentAmount()) + ")."
-            + "\n\nIf you have already paid this, you can disregard this email.";
+            + "\n\nIf you have already paid this, you can disregard this email."
+            + "\n\nFor more information go to " + getPaymentUrl(recurringPayment);
+    }
+
+    private String formatHtmlReminder(RecurringPayment recurringPayment, PaymentArrangement paymentArrangement) {
+        return "<p>The payment for "
+            + recurringPayment.getName()
+            + " is due on "
+            + recurringPayment.getNextPaymentDate().toString()
+            + ". You owe "
+            + String.format("$%.2f", recurringPayment.getPaymentAmount() * 0.01 * paymentArrangement.getPercentage())
+            + " (" + String.format("%.2f", paymentArrangement.getPercentage()) + "% of " + String.format("$%.2f", recurringPayment.getPaymentAmount()) + ")."
+            + "<br/><br/>If you have already paid this, you can disregard this email."
+            + "<br/><br/>For more information go to <a href=\"" + getPaymentUrl(recurringPayment) + "\">" + getPaymentUrl(recurringPayment) + "</a></p>";
+    }
+
+    private String getPaymentUrl(RecurringPayment recurringPayment) {
+        return settingsService.getServerSettings().getHostname() + "/recurring_payments/show/" + recurringPayment.getId().toString();
     }
 }

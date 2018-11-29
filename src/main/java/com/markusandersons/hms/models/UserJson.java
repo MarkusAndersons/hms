@@ -48,4 +48,11 @@ public interface UserJson {
     Optional<String> getUsername();
 
     Optional<String> getPassword();
+
+    // User permissions
+    boolean isServerAdmin();
+
+    boolean canModifyUsers();
+
+    boolean canDeleteData();
 }

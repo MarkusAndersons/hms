@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-package com.markusandersons.hms.util;
+package com.markusandersons.hms.models;
 
-public final class ApplicationConstants {
-    private ApplicationConstants() {
-    }
+import lombok.Data;
 
-    public static final String VERSION = "1.0";
-    public static final double EPSILON = 1e-5;
-    public static final long PAYMENT_REMINDER_DAYS = 2;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.util.UUID;
 
-    /* Mailgun Settings */
-    public static final String MG_DOMAIN = System.getenv("MG_DOMAIN");
-    public static final String MG_API_KEY = System.getenv("MG_API_KEY");
+@Entity
+@Data
+public class ServerSettings {
+    @Id
+    @GeneratedValue
+    private UUID id;
+    private String hostname;
+    private String serverTimezone;
 }

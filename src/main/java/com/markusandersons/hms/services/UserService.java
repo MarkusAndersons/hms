@@ -16,8 +16,7 @@
 
 package com.markusandersons.hms.services;
 
-import com.markusandersons.hms.auth.AuthorizationException;
-import com.markusandersons.hms.models.ChangeAccountCredentials;
+import com.markusandersons.hms.auth.AuthConstants;
 import com.markusandersons.hms.models.User;
 import com.markusandersons.hms.models.UserJson;
 import com.markusandersons.hms.repositories.UserRepository;
@@ -25,7 +24,6 @@ import com.markusandersons.hms.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -39,7 +37,6 @@ public class UserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -66,7 +63,7 @@ public class UserService {
         return userOptional.map(JsonUtils::getJson);
     }
 
-    public Optional<UserJson> updateUser(UUID id, UserJson user) {
+    public Optional<UserJson> updateUser(UUID id, UserJson user, boolean canModifyPermissions) {
         final Optional<User> optionalUser = userRepository.findById(id);
         if (!optionalUser.isPresent()) {
             return Optional.empty();
@@ -80,6 +77,12 @@ public class UserService {
             u.setPhone(user.getPhone());
         if (user.getEmail() != null)
             u.setEmail(user.getEmail());
+        if (canModifyPermissions) {
+            final int authorizationScope = (user.isServerAdmin() ? AuthConstants.SERVER_ADMIN : 0) |
+                (user.canModifyUsers() ? AuthConstants.MODIFY_USERS : 0) |
+                (user.canDeleteData() ? AuthConstants.DELETE_DATA : 0);
+            u.setAuthorizationScope(authorizationScope);
+        }
         userRepository.save(u);
         return Optional.of(JsonUtils.getJson(u));
     }
@@ -92,17 +95,5 @@ public class UserService {
             userRepository.delete(user);
         }
         return "User:" + id.toString() + " deleted";
-    }
-
-    // NOTE: will need to log out of web app to remove stored token
-    public String updatePassword(ChangeAccountCredentials accountCredentials) {
-        final Optional<User> optionalUser = userRepository.findByUsername(accountCredentials.getUsername());
-        if (!optionalUser.isPresent()) throw new IllegalArgumentException("Cannot find given user");
-        final User user = optionalUser.get();
-        if (!bCryptPasswordEncoder.matches(accountCredentials.getPassword(), user.getPassword()))
-            throw new AuthorizationException("Current password does not match");
-        user.setPassword(bCryptPasswordEncoder.encode(accountCredentials.getNewPassword()));
-        userRepository.save(user);
-        return accountCredentials.getUsername() + " - password updated";
     }
 }

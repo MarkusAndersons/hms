@@ -19,6 +19,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import AppConstants from '../../AppConstants';
 import * as ApiTools from '../../services/ApiTools';
+import * as FormatTools from '../../services/FormatTools';
 import Layout from '../Layout';
 
 class CreateUser extends Component {
@@ -31,6 +32,19 @@ class CreateUser extends Component {
       email: '',
       username: '',
       password: '',
+      permissions: {
+        isServerAdmin: false,
+        canModifyUsers: false,
+        canDeleteData: false
+      },
+      validField: {
+        firstName: true,
+        surname: true,
+        phone: true,
+        email: true,
+        username: true,
+        password: true
+      },
       error: null
     };
   }
@@ -38,16 +52,29 @@ class CreateUser extends Component {
     const state = this.state
     state[e.target.name] = e.target.value;
     this.setState(state);
+    FormatTools.validateUserData(this.state.firstName, this.state.surname, this.state.phone, this.state.email, this.state.username, this.state.password, this);
+  }
+
+  onPermissionChange = (e) => {
+    const state = this.state
+    state.permissions[e.target.name] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    this.setState(state);
   }
 
   onSubmit = (e) => {
     e.preventDefault();
 
     const { firstName, surname, phone, email, username, password } = this.state;
+    const { isServerAdmin, canModifyUsers, canDeleteData } = this.state.permissions;
+    // Validate data
+    const valid = FormatTools.validateUserData(firstName, surname, phone, email, username, password, this);
+    if (!valid) {
+      return;
+    }
 
     const header = ApiTools.getDefaultHeader();
     const state = this.state;
-    axios.post(AppConstants.API_USERS_CREATE, { firstName, surname, phone, email, username, password }, {headers: header})
+    axios.post(AppConstants.API_USERS_CREATE, { firstName, surname, phone, email, username, password, isServerAdmin, canModifyUsers, canDeleteData }, {headers: header})
       .then((result) => {
         state.error = null;
         this.setState(state);
@@ -60,6 +87,7 @@ class CreateUser extends Component {
 
   render() {
     const { firstName, surname, phone, email, username, password } = this.state;
+    const { isServerAdmin, canModifyUsers, canDeleteData } = this.state.permissions;
     return (
       <Layout componentIndex={AppConstants.COMPONENT_USERS} error={this.state.error}>
         <div className="container">
@@ -74,29 +102,61 @@ class CreateUser extends Component {
               <form onSubmit={this.onSubmit}>
                 <div className="form-group">
                   <label for="username">Username:</label>
-                  <input type="text" className="form-control" name="username" value={username} onChange={this.onChange} placeholder="Username" />
+                  <input type="text" className={"form-control" + (this.state.validField.username ? "" : " is-invalid")} name="username" value={username} onChange={this.onChange} placeholder="Username" />
+                  <div className="invalid-feedback">
+                    Please enter a username.
+                  </div>
                 </div>
                 <div className="form-group">
                   <label for="password">Password:</label>
-                  <input type="password" className="form-control" name="password" value={password} onChange={this.onChange} placeholder="Password" />
+                  <input type="password" className={"form-control" + (this.state.validField.password ? "" : " is-invalid")} name="password" value={password} onChange={this.onChange} placeholder="Password" />
+                  <div className="invalid-feedback">
+                    Please enter a password.
+                  </div>
                 </div>
                 <div className="form-group">
                   <label for="firstName">First Name:</label>
-                  <input type="text" className="form-control" name="firstName" value={firstName} onChange={this.onChange} placeholder="First Name" />
+                  <input type="text" className={"form-control" + (this.state.validField.firstName ? "" : " is-invalid")} name="firstName" value={firstName} onChange={this.onChange} placeholder="First Name" />
+                  <div className="invalid-feedback">
+                    Please enter a first name.
+                  </div>
                 </div>
                 <div className="form-group">
                   <label for="surname">Surname:</label>
-                  <input type="text" className="form-control" name="surname" value={surname} onChange={this.onChange} placeholder="Surname" />
+                  <input type="text" className={"form-control" + (this.state.validField.surname ? "" : " is-invalid")} name="surname" value={surname} onChange={this.onChange} placeholder="Surname" />
+                  <div className="invalid-feedback">
+                    Please enter a surname.
+                  </div>
                 </div>
                 <div className="form-group">
                   <label for="phone">Phone:</label>
-                  <input type="text" className="form-control" name="phone" value={phone} onChange={this.onChange} placeholder="Phone Number" />
+                  <input type="text" className={"form-control" + (this.state.validField.phone ? "" : " is-invalid")} name="phone" value={phone} onChange={this.onChange} placeholder="Phone Number" />
+                  <div className="invalid-feedback">
+                    Please enter a phone number.
+                  </div>
                 </div>
                 <div className="form-group">
                   <label for="email">Email:</label>
-                  <input type="email" className="form-control" name="email" value={email} onChange={this.onChange} placeholder="Email Address" />
+                  <input type="email" className={"form-control" + (this.state.validField.email ? "" : " is-invalid")} name="email" value={email} onChange={this.onChange} placeholder="Email Address" />
+                  <div className="invalid-feedback">
+                    Please enter an email address.
+                  </div>
                 </div>
-                <button type="submit" className="btn btn-default">Submit</button>
+                <div className="form-check form-check-inline">
+                  <label for="isServerAdmin">Server Admin:</label>
+                  <input type="checkbox" className="form-control" name="isServerAdmin" checked={isServerAdmin} onChange={this.onPermissionChange} />
+                </div>
+                <div className="form-check form-check-inline">
+                  <label for="canModifyUsers">Can Modify Users:</label>
+                  <input type="checkbox" className="form-control" name="canModifyUsers" checked={canModifyUsers} onChange={this.onPermissionChange} />
+                </div>
+                <div className="form-check form-check-inline">
+                  <label for="canDeleteData">Can Delete Data:</label>
+                  <input type="checkbox" className="form-control" name="canDeleteData" checked={canDeleteData} onChange={this.onPermissionChange} />
+                </div>
+                <div className="form-group">
+                  <button type="submit" className="btn btn-default">Submit</button>
+                </div>
               </form>
             </div>
           </div>

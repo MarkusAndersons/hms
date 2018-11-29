@@ -31,7 +31,7 @@ export default Object.freeze({
   API_PAYMENT_LIST: "/api/recurring_payments/list",
   API_PAYMENT_CREATE: "/api/recurring_payments/create",
   API_PAYMENT_PAYMENT: "/api/recurring_payments/payment",
-  API_CHANGE_PASSWORD: "/api/users/update_password",
+  API_CHANGE_PASSWORD: "/api/settings/update_password",
   API_STATUS: "/status",
 
   // Paths

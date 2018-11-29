@@ -53,7 +53,7 @@ class CreatePayment extends Component {
     const state = this.state;
     axios.get(AppConstants.API_USERS_LIST, {headers: header})
       .then(res => {
-        state.error = this.state;
+        state.error = null;
         this.setState(state);
         this.setState({ users: res.data });
       })

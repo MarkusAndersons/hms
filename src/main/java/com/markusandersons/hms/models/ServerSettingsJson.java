@@ -20,31 +20,12 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.immutables.value.Value;
 
-import java.time.LocalDate;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-
 @Value.Immutable
-@JsonSerialize(as = com.markusandersons.hms.models.ImmutableRecurringPaymentJson.class)
-@JsonDeserialize(as = com.markusandersons.hms.models.ImmutableRecurringPaymentJson.class)
+@JsonSerialize(as = com.markusandersons.hms.models.ImmutableServerSettingsJson.class)
+@JsonDeserialize(as = com.markusandersons.hms.models.ImmutableServerSettingsJson.class)
 @Value.Style(jdkOnly = true)
-public interface RecurringPaymentJson {
-    Optional<UUID> getId();
+public interface ServerSettingsJson {
+    String getHostname();
 
-    String getName();
-
-    String getNotes();
-
-    double getPaymentAmount();
-
-    LocalDate getNextPaymentDate();
-
-    PaymentCycle getPaymentCycle();
-
-    Optional<Integer> getPaymentDays();
-
-    Map<UUID, Double> getUsers();
-
-    Map<UUID, OwnershipStringDoubleTuple> getOwnership();
+    String getServerTimezone();
 }

@@ -81,6 +81,56 @@ const formatOwnership = (ownership, price, ownerHeader) => {
 }
 
 /**
+ * Validate the fields for a user
+ * @param {React.Component} self the react component being validated
+ */
+const validateUserData = (firstName, surname, phone, email, username, password, self) => {
+  let { validField } = self.state;
+  let valid = true;
+  if (firstName === "") {
+    validField.firstName = false;
+    valid = false;
+  } else {
+    validField.firstName = true;
+  }
+  if (surname === '') {
+    validField.surname = false;
+    valid = false;
+  } else {
+    validField.surname = true;
+  }
+  if (phone === '') {
+    validField.phone = false;
+    valid = false;
+  } else {
+    validField.phone = true;
+  }
+  if (email === '') {
+    validField.email = false;
+    valid = false;
+  } else {
+    validField.email = true;
+  }
+  if (username === '') {
+    validField.username = false;
+    valid = false;
+  } else {
+    validField.username = true;
+  }
+  if (password === '') {
+    validField.password = false;
+    valid = false;
+  } else {
+    validField.password = true;
+  }
+
+  if (!valid) {
+    self.setState({validField: validField});
+  }
+  return valid;
+}
+
+/**
  * Validate the fields for an item
  * @param {React.Component} self the react component being validated
  */
@@ -176,6 +226,7 @@ export {
   formatPrice,
   formatDueDate,
   formatOwnership,
+  validateUserData,
   validateItemData,
   validateRecurringPaymentData,
   convertPaymentCycleToType,

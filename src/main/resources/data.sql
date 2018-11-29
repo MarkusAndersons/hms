@@ -1,3 +1,7 @@
+-- Create Server Settings
+INSERT INTO server_settings (id, hostname, server_timezone)
+VALUES ('00000000-0000-0000-0000-000000000000', 'http://localhost:8080', 'Australia/Sydney');
+
 -- Create test users
 INSERT INTO users (id, email, first_name, surname, phone, username, password, authorization_scope)
 VALUES ('676DF5C1-2243-4B4C-B1F7-07266BF9AC22', 'test@test.com', 'Default', 'User', '+614000000000', 'admin', '$2a$10$5UFZYUnDrmQ9jM0.8m1Ma.WuRIr8pYd6gbBPvbV2kM9uyJ3YLlkBe', -1);

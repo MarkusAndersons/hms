@@ -43,18 +43,21 @@ public class RecurringPaymentsService {
     private final UserRepository userRepository;
     private final PaymentArrangementRepository paymentArrangementRepository;
     private final ReminderEmailService reminderEmailService;
+    private final SettingsService settingsService;
 
     @Autowired
     public RecurringPaymentsService(
         RecurringPaymentRepository recurringPaymentRepository,
         UserRepository userRepository,
         PaymentArrangementRepository paymentArrangementRepository,
-        ReminderEmailService reminderEmailService
+        ReminderEmailService reminderEmailService,
+        SettingsService settingsService
     ) {
         this.recurringPaymentRepository = recurringPaymentRepository;
         this.userRepository = userRepository;
         this.paymentArrangementRepository = paymentArrangementRepository;
         this.reminderEmailService = reminderEmailService;
+        this.settingsService = settingsService;
     }
 
     public Iterable<RecurringPaymentJson> listSharedItems() {
@@ -82,27 +85,15 @@ public class RecurringPaymentsService {
             throw new WebServiceException("Ownership is not 100%");
         }
 
-        final RecurringPayment newItem;
-        if (recurringPaymentJson.getNextPaymentDate().isPresent()) {
-            newItem = new RecurringPayment(
-                recurringPaymentJson.getName(),
-                recurringPaymentJson.getNotes(),
-                recurringPaymentJson.getPaymentAmount(),
-                recurringPaymentJson.getNextPaymentDate().get(),
-                recurringPaymentJson.getPaymentCycle(),
-                paymentArrangements,
-                recurringPaymentJson.getPaymentDays().orElse(null)
-            );
-        } else {
-            newItem = new RecurringPayment(
-                recurringPaymentJson.getName(),
-                recurringPaymentJson.getNotes(),
-                recurringPaymentJson.getPaymentAmount(),
-                recurringPaymentJson.getPaymentCycle(),
-                paymentArrangements,
-                recurringPaymentJson.getPaymentDays().orElse(null)
-            );
-        }
+        final RecurringPayment newItem = new RecurringPayment(
+            recurringPaymentJson.getName(),
+            recurringPaymentJson.getNotes(),
+            recurringPaymentJson.getPaymentAmount(),
+            recurringPaymentJson.getNextPaymentDate(),
+            recurringPaymentJson.getPaymentCycle(),
+            paymentArrangements,
+            recurringPaymentJson.getPaymentDays().orElse(null)
+        );
         recurringPaymentRepository.save(newItem);
         for (PaymentArrangement p : paymentArrangements) {
             p.setRecurringPayment(newItem);
@@ -121,16 +112,16 @@ public class RecurringPaymentsService {
             p.setName(payment.getName());
         if (payment.getNotes() != null)
             p.setNotes(payment.getNotes());
-        if (payment.getNextPaymentDate().isPresent())
-            p.setNextPaymentDate(payment.getNextPaymentDate().get());
+        if (payment.getNextPaymentDate() != null)
+            p.setNextPaymentDate(payment.getNextPaymentDate());
         if (payment.getPaymentCycle() != null)
             p.setPaymentCycle(payment.getPaymentCycle());
         if (payment.getPaymentDays().isPresent())
             p.setPaymentDays(payment.getPaymentDays().get());
         p.setPaymentAmount(payment.getPaymentAmount());
 
-        if (p.getNextPaymentDate().isBefore(LocalDate.now(ZoneId.of(ApplicationConstants.LOCAL_TIME_ZONE)))) {
-            p.calculateNextPaymentDate();
+        if (p.getNextPaymentDate().isBefore(LocalDate.now(ZoneId.of(settingsService.getServerTimezone())))) {
+            p.calculateNextPaymentDate(LocalDate.now(ZoneId.of(settingsService.getServerTimezone())));
         }
 
         // update payment arrangement
@@ -150,13 +141,13 @@ public class RecurringPaymentsService {
     public void updateAllPaymentDates() {
         final Iterable<RecurringPayment> payments = recurringPaymentRepository.findAll();
         for (RecurringPayment payment : payments) {
-            if (payment.getNextPaymentDate().isBefore(LocalDate.now(ZoneId.of(ApplicationConstants.LOCAL_TIME_ZONE)))) {
-                payment.calculateNextPaymentDate();
+            if (payment.getNextPaymentDate().isBefore(LocalDate.now(ZoneId.of(settingsService.getServerTimezone())))) {
+                payment.calculateNextPaymentDate(LocalDate.now(ZoneId.of(settingsService.getServerTimezone())));
                 for (PaymentArrangement paymentArrangement : payment.getPaymentArrangements()) {
                     paymentArrangement.setReminderSent(false);
                 }
                 recurringPaymentRepository.save(payment);
-            } else if (payment.getNextPaymentDate().isAfter(LocalDate.now(ZoneId.of(ApplicationConstants.LOCAL_TIME_ZONE)).minusDays(ApplicationConstants.PAYMENT_REMINDER_DAYS))) {
+            } else if (payment.getNextPaymentDate().isAfter(LocalDate.now(ZoneId.of(settingsService.getServerTimezone())).minusDays(ApplicationConstants.PAYMENT_REMINDER_DAYS))) {
                 try {
                     reminderEmailService.sendReminderEmail(payment);
                 } catch (EmailSendException e) {
