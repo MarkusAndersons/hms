@@ -16,11 +16,16 @@
 
 package com.markusandersons.hms.controllers;
 
+import com.markusandersons.hms.auth.AuthConstants;
+import com.markusandersons.hms.auth.AuthTools;
+import com.markusandersons.hms.auth.AuthorizationException;
 import com.markusandersons.hms.models.RecurringPaymentJson;
+import com.markusandersons.hms.services.ArchivingService;
 import com.markusandersons.hms.services.RecurringPaymentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,10 +34,14 @@ import java.util.UUID;
 public class RecurringPaymentController {
 
     private final RecurringPaymentsService recurringPaymentsService;
+    private final ArchivingService archivingService;
+    private final AuthTools authTools;
 
     @Autowired
-    public RecurringPaymentController(RecurringPaymentsService recurringPaymentsService) {
+    public RecurringPaymentController(RecurringPaymentsService recurringPaymentsService, ArchivingService archivingService, AuthTools authTools) {
         this.recurringPaymentsService = recurringPaymentsService;
+        this.archivingService = archivingService;
+        this.authTools = authTools;
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/list")
@@ -41,7 +50,8 @@ public class RecurringPaymentController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/create")
-    public RecurringPaymentJson create(@RequestBody RecurringPaymentJson recurringPayment) {
+    public RecurringPaymentJson create(Principal principal, @RequestBody RecurringPaymentJson recurringPayment) {
+        archivingService.archiveEvent(RecurringPaymentController.class.getName() + "/create", RequestMethod.POST.name(), recurringPayment.toString(), principal);
         return recurringPaymentsService.createRecurringPayment(recurringPayment);
     }
 
@@ -51,7 +61,17 @@ public class RecurringPaymentController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/payment/{id}")
-    public Optional<RecurringPaymentJson> update(@PathVariable UUID id, @RequestBody RecurringPaymentJson payment) {
+    public Optional<RecurringPaymentJson> update(Principal principal, @PathVariable UUID id, @RequestBody RecurringPaymentJson payment) {
+        archivingService.archiveEvent(SharedItemController.class.getName() + "/payment/" + id.toString(), RequestMethod.PUT.name(), payment.toString(), principal);
         return recurringPaymentsService.updatePayment(id, payment);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/payment/{id}")
+    public String delete(Principal principal, @PathVariable UUID id) {
+        if ((authTools.getAuthorizations(principal) & AuthConstants.DELETE_DATA) != 0) {
+            archivingService.archiveEvent(RecurringPaymentController.class.getName() + "/payment/" + id.toString(), RequestMethod.DELETE.name(), null, principal);
+            return recurringPaymentsService.deletePayment(id);
+        }
+        throw new AuthorizationException("Cannot delete payment!");
     }
 }

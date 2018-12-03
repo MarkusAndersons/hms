@@ -1,6 +1,6 @@
 -- Create Server Settings
-INSERT INTO server_settings (id, hostname, server_timezone)
-VALUES ('00000000-0000-0000-0000-000000000000', 'http://localhost:8080', 'Australia/Sydney');
+INSERT INTO server_settings (id, hostname, server_timezone, archive_all_events)
+VALUES ('00000000-0000-0000-0000-000000000000', 'http://localhost:8080', 'Australia/Sydney', false);
 
 -- Create test users
 INSERT INTO users (id, email, first_name, surname, phone, username, password, authorization_scope)

@@ -156,4 +156,17 @@ public class RecurringPaymentsService {
             }
         }
     }
+
+    public String deletePayment(UUID id) {
+        LOGGER.info("Deleting payment with id: " + id.toString());
+        final Optional<RecurringPayment> optionalRecurringPayment = recurringPaymentRepository.findById(id);
+        if (optionalRecurringPayment.isPresent()) {
+            final RecurringPayment recurringPayment = optionalRecurringPayment.get();
+            for (PaymentArrangement arrangement: recurringPayment.getPaymentArrangements()) {
+                paymentArrangementRepository.delete(arrangement);
+            }
+            recurringPaymentRepository.delete(recurringPayment);
+        }
+        return "Payment:" + id.toString() + " deleted";
+    }
 }

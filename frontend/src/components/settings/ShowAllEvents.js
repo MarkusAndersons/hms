@@ -21,26 +21,26 @@ import AppConstants from '../../AppConstants';
 import * as ApiTools from '../../services/ApiTools';
 import Layout from '../Layout';
 
-class ShowServerSettings extends Component {
+class ShowAllEvents extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      settings: {},
+      events: [],
       error: null
     };
   }
 
   componentDidMount() {
-    const header = ApiTools.getDefaultHeader();
     const state = this.state;
-    axios.get(AppConstants.API_SERVER_SETTINGS, {headers: header})
+    const header = ApiTools.getDefaultHeader();
+    axios.get(AppConstants.API_LIST_EVENTS, {headers: header})
       .then(res => {
         state.error = null;
         this.setState(state);
-        this.setState({ settings: res.data});
+        this.setState({ events: res.data });
       })
       .catch((error) => {
-        state.error = "An error occured getting settings (" + String(error) + ")";
+        state.error = "An error occured getting events (" + String(error) + ")";
         this.setState(state);
       });
   }
@@ -52,27 +52,39 @@ class ShowServerSettings extends Component {
           <div className="panel panel-default">
             <div className="panel-heading">
               <h3 className="panel-title">
-                Server Settings
+                Event List
               </h3>
             </div>
             <div className="panel-body">
-              <p><Link to={AppConstants.PATH_SETTINGS}><span className="glyphicon glyphicon-th-list" aria-hidden="true"></span> Back to Settings</Link></p>
-              <dl>
-                <dt>Hostname:</dt>
-                <dd>{this.state.settings.hostname}</dd>
-                <dt>Server Timezone:</dt>
-                <dd>{this.state.settings.serverTimezone}</dd>
-                <dt>Archiving All Events:</dt>
-                <dd>{this.state.settings.archiveAllEvents ? "True" : "False"}</dd>
-              </dl>
-              <Link to={AppConstants.PATH_SETTINGS_SERVER_EDIT} className="btn btn-success">Edit</Link>&nbsp;
+              <p><Link to={AppConstants.PATH_SETTINGS}><span className="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>Back to Settings</Link></p>
+              <table className="table table-stripe">
+                <thead>
+                  <tr>
+                    <th>Event Time (UTC)</th>
+                    <th>User</th>
+                    <th>Request Path</th>
+                    <th>Request HTTP Method</th>
+                    <th>Stored Data</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.events.map(e =>
+                    <tr key={e.id}>
+                      <td>{e.eventTime}</td>
+                      <td>{e.username}</td>
+                      <td>{e.requestPath}</td>
+                      <td>{e.requestHttpMethod}</td>
+                      <td>{e.storedData}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </Layout>
     );
   }
-
 }
 
-export default ShowServerSettings;
+export default ShowAllEvents;

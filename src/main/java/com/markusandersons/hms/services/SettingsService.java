@@ -64,6 +64,7 @@ public class SettingsService {
             settings.setHostname(serverSettings.getHostname());
         if (serverSettings.getServerTimezone() != null)
             settings.setServerTimezone(serverSettings.getServerTimezone());
+        settings.setArchiveAllEvents(serverSettings.getArchiveAllEvents());
         serverSettingsRepository.save(settings);
         return JsonUtils.getJson(settings);
     }

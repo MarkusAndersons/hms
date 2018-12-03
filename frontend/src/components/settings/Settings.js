@@ -34,6 +34,7 @@ class Settings extends Component {
               <ul>
                 <li><Link to={AppConstants.PATH_SETTINGS_CHANGE_PASSWORD}>Change Password</Link></li>
                 <li><Link to={AppConstants.PATH_SETTINGS_SERVER_SHOW}>Server Settings</Link></li>
+                <li><Link to={AppConstants.PATH_ARCHIVED_EVENTS}>Show All Server Interactions</Link></li>
                 <li><Link to={AppConstants.PATH_LOGOUT}>Logout</Link></li>
               </ul>
             </div>

@@ -34,6 +34,7 @@ export default Object.freeze({
   API_CHANGE_PASSWORD: "/api/settings/update_password",
   API_SERVER_SETTINGS: "/api/settings/server",
   API_SETTINGS_LIST_TIMEZONES: "/api/settings/all_timezones",
+  API_LIST_EVENTS: "/api/archived_events/list",
   API_STATUS: "/status",
 
   // Paths
@@ -55,6 +56,7 @@ export default Object.freeze({
   PATH_SETTINGS_CHANGE_PASSWORD: "/settings/change_password",
   PATH_SETTINGS_SERVER_SHOW: "/settings/server/show",
   PATH_SETTINGS_SERVER_EDIT: "/settings/server/edit",
+  PATH_ARCHIVED_EVENTS: "/settings/archived_events",
 
   // Constant values
   MAX_AUTH_AGE: 3600000 // Micros

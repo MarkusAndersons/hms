@@ -93,6 +93,8 @@ class ShowUser extends Component {
               <dl>
                 <dt>Name:</dt>
                 <dd>{this.state.user.name}</dd>
+                <dt>Username:</dt>
+                <dd>{this.state.user.username}</dd>
                 <dt>Phone Number:</dt>
                 <dd>{this.state.user.phone}</dd>
                 <dt>Email Address:</dt>

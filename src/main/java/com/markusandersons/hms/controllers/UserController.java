@@ -20,6 +20,7 @@ import com.markusandersons.hms.auth.AuthConstants;
 import com.markusandersons.hms.auth.AuthTools;
 import com.markusandersons.hms.auth.AuthorizationException;
 import com.markusandersons.hms.models.UserJson;
+import com.markusandersons.hms.services.ArchivingService;
 import com.markusandersons.hms.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,11 +34,13 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+    private final ArchivingService archivingService;
     private final AuthTools authTools;
 
     @Autowired
-    public UserController(UserService userService, AuthTools authTools) {
+    public UserController(UserService userService, ArchivingService archivingService, AuthTools authTools) {
         this.userService = userService;
+        this.archivingService = archivingService;
         this.authTools = authTools;
     }
 
@@ -48,8 +51,10 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/create")
     public UserJson create(Principal principal, @RequestBody UserJson user) {
-        if ((authTools.getAuthorizations(principal) & AuthConstants.MODIFY_USERS) != 0)
+        if ((authTools.getAuthorizations(principal) & AuthConstants.MODIFY_USERS) != 0) {
+            archivingService.archiveEvent(UserController.class.getName() + "/create", RequestMethod.POST.name(), user.toString(), principal);
             return userService.createUser(user);
+        }
         throw new AuthorizationException("Cannot create new user!");
     }
 
@@ -60,13 +65,16 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/user/{id}")
     public Optional<UserJson> update(Principal principal, @PathVariable UUID id, @RequestBody UserJson user) {
+        archivingService.archiveEvent(UserController.class.getName() + "/user/" + id.toString(), RequestMethod.PUT.name(), user.toString(), principal);
         return userService.updateUser(id, user, (authTools.getAuthorizations(principal) & AuthConstants.MODIFY_USERS) != 0);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/user/{id}")
     public String delete(Principal principal, @PathVariable UUID id) {
-        if ((authTools.getAuthorizations(principal) & AuthConstants.MODIFY_USERS) != 0)
+        if ((authTools.getAuthorizations(principal) & AuthConstants.MODIFY_USERS) != 0) {
+            archivingService.archiveEvent(UserController.class.getName() + "/user/" + id.toString(), RequestMethod.DELETE.name(), null, principal);
             return userService.deleteUser(id);
+        }
         throw new AuthorizationException("Cannot delete user!");
     }
 }

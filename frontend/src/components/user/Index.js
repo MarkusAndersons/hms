@@ -61,6 +61,7 @@ class IndexUser extends Component {
                 <thead>
                   <tr>
                     <th>Name</th>
+                    <th>Username</th>
                     <th>Email</th>
                     <th>Phone</th>
                   </tr>
@@ -69,6 +70,7 @@ class IndexUser extends Component {
                   {this.state.users.map(u =>
                     <tr key={u.id}>
                       <td><Link to={AppConstants.PATH_USER_SHOW + '/' + u.id}>{u.name}</Link></td>
+                      <td>{u.username}</td>
                       <td>{u.email}</td>
                       <td>{u.phone}</td>
                     </tr>

@@ -31,4 +31,5 @@ public class ServerSettings {
     private UUID id;
     private String hostname;
     private String serverTimezone;
+    private boolean archiveAllEvents;
 }

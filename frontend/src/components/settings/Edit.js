@@ -63,18 +63,30 @@ class EditSettings extends Component {
   }
 
   onChange = (e) => {
-    const state = this.state.settings;
-    state[e.target.name] = e.target.value;
-    this.setState({ settings: state });
+    const state = this.state;
+    state.settings[e.target.name] = e.target.value;
+    this.setState(state);
+  }
+
+  onTimezoneChange = (e) => {
+    const state = this.state;
+    state.settings.serverTimezone = e.target.value;
+    this.setState(state);
+  }
+
+  onArchiveChange = (e) => {
+    const state = this.state;
+    state.settings.archiveAllEvents = e.target.value;
+    this.setState(state);
   }
 
   onSubmit = (e) => {
     e.preventDefault();
 
-    const { hostname, serverTimezone } = this.state.settings;
+    const { hostname, serverTimezone, archiveAllEvents } = this.state.settings;
     const state = this.state;
     const header = ApiTools.getDefaultHeader();
-    axios.put(AppConstants.API_SERVER_SETTINGS, { hostname, serverTimezone }, {headers: header})
+    axios.put(AppConstants.API_SERVER_SETTINGS, { hostname, serverTimezone, archiveAllEvents }, {headers: header})
       .then((result) => {
         state.error = null;
         this.setState(state);
@@ -87,7 +99,6 @@ class EditSettings extends Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <Layout componentIndex={AppConstants.COMPONENT_ITEMS} error={this.state.error}>
         <div className="container">
@@ -109,10 +120,17 @@ class EditSettings extends Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="serverTimezone">Server Timezone:</label>
-                  <select value={this.state.settings.serverTimezone} onChange={this.onChange}>
+                  <select value={this.state.settings.serverTimezone} onChange={this.onTimezoneChange}>
                     {this.state.timezones.map(t =>
                       <option value={t} key={t}>{t}</option>
                     )}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="archiveAllEvents">Archive All Events:</label>
+                  <select value={this.state.settings.archiveAllEvents} onChange={this.onArchiveChange}>
+                      <option value={true}>True</option>
+                      <option value={false}>False</option>
                   </select>
                 </div>
                 <button type="submit" className="btn btn-default">Submit</button>

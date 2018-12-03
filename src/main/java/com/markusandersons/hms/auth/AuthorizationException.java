@@ -19,7 +19,7 @@ package com.markusandersons.hms.auth;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.UNAUTHORIZED)
+@ResponseStatus(HttpStatus.FORBIDDEN)
 public class AuthorizationException extends RuntimeException {
     /**
      * Constructs a new runtime exception with {@code null} as its

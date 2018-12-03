@@ -25,6 +25,8 @@ import com.markusandersons.hms.repositories.SharedItemRepository;
 import com.markusandersons.hms.repositories.UserRepository;
 import com.markusandersons.hms.util.ApplicationConstants;
 import com.markusandersons.hms.util.JsonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,7 @@ import java.util.stream.StreamSupport;
 @Service
 public class SharedItemService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SharedItemService.class);
     private final SharedItemRepository sharedItemRepository;
     private final UserRepository userRepository;
     private final OwnershipRepository ownershipRepository;
@@ -113,5 +116,18 @@ public class SharedItemService {
     public Optional<SharedItemJson> getSharedItem(UUID id) {
         final Optional<SharedItem> itemOptional = sharedItemRepository.findById(id);
         return itemOptional.map(JsonUtils::getJson);
+    }
+
+    public String deleteItem(UUID id) {
+        LOGGER.info("Deleting item with id: " + id.toString());
+        final Optional<SharedItem> optionalSharedItem = sharedItemRepository.findById(id);
+        if (optionalSharedItem.isPresent()) {
+            final SharedItem item = optionalSharedItem.get();
+            for (Ownership ownership : item.getOwnership()) {
+                ownershipRepository.delete(ownership);
+            }
+            sharedItemRepository.delete(item);
+        }
+        return "Item:" + id.toString() + " deleted";
     }
 }

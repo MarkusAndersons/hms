@@ -36,6 +36,9 @@ public class ArchiveEvent {
     private String storedData;
     private String username;
 
+    public ArchiveEvent() {
+    }
+
     public ArchiveEvent(String requestPath, String requestHttpMethod, LocalDateTime eventTime, String storedData, String username) {
         this.requestPath = requestPath;
         this.requestHttpMethod = requestHttpMethod;

@@ -28,4 +28,6 @@ public interface ServerSettingsJson {
     String getHostname();
 
     String getServerTimezone();
+
+    boolean getArchiveAllEvents();
 }

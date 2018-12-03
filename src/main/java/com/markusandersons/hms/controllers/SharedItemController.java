@@ -16,11 +16,16 @@
 
 package com.markusandersons.hms.controllers;
 
+import com.markusandersons.hms.auth.AuthConstants;
+import com.markusandersons.hms.auth.AuthTools;
+import com.markusandersons.hms.auth.AuthorizationException;
 import com.markusandersons.hms.models.SharedItemJson;
+import com.markusandersons.hms.services.ArchivingService;
 import com.markusandersons.hms.services.SharedItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,10 +34,14 @@ import java.util.UUID;
 public class SharedItemController {
 
     private final SharedItemService sharedItemService;
+    private final ArchivingService archivingService;
+    private final AuthTools authTools;
 
     @Autowired
-    public SharedItemController(SharedItemService sharedItemService) {
+    public SharedItemController(SharedItemService sharedItemService, ArchivingService archivingService, AuthTools authTools) {
         this.sharedItemService = sharedItemService;
+        this.archivingService = archivingService;
+        this.authTools = authTools;
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/list")
@@ -41,7 +50,8 @@ public class SharedItemController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/create")
-    public SharedItemJson create(@RequestBody SharedItemJson item) {
+    public SharedItemJson create(Principal principal, @RequestBody SharedItemJson item) {
+        archivingService.archiveEvent(SharedItemController.class.getName() + "/create", RequestMethod.POST.name(), item.toString(), principal);
         return sharedItemService.createSharedItem(item);
     }
 
@@ -51,7 +61,17 @@ public class SharedItemController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/item/{id}")
-    public Optional<SharedItemJson> update(@PathVariable UUID id, @RequestBody SharedItemJson item) {
+    public Optional<SharedItemJson> update(Principal principal, @PathVariable UUID id, @RequestBody SharedItemJson item) {
+        archivingService.archiveEvent(SharedItemController.class.getName() + "/item/" + id.toString(), RequestMethod.PUT.name(), item.toString(), principal);
         return sharedItemService.updateItem(id, item);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/item/{id}")
+    public String delete(Principal principal, @PathVariable UUID id) {
+        if ((authTools.getAuthorizations(principal) & AuthConstants.DELETE_DATA) != 0) {
+            archivingService.archiveEvent(SharedItemController.class.getName() + "/item/" + id.toString(), RequestMethod.DELETE.name(), null, principal);
+            return sharedItemService.deleteItem(id);
+        }
+        throw new AuthorizationException("Cannot delete item!");
     }
 }

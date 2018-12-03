@@ -43,6 +43,7 @@ import Settings from './components/settings/Settings';
 import ChangePassword from './components/settings/ChangePassword';
 import ShowServerSettings from './components/settings/Show';
 import EditSettings from './components/settings/Edit';
+import ShowAllEvents from './components/settings/ShowAllEvents';
 
 
 ReactDOM.render(
@@ -55,6 +56,7 @@ ReactDOM.render(
       <PrivateRoute path={AppConstants.PATH_SETTINGS_CHANGE_PASSWORD} component={ChangePassword} />
       <PrivateRoute path={AppConstants.PATH_SETTINGS_SERVER_SHOW} component={ShowServerSettings} />
       <PrivateRoute path={AppConstants.PATH_SETTINGS_SERVER_EDIT} component={EditSettings} />
+      <PrivateRoute path={AppConstants.PATH_ARCHIVED_EVENTS} component={ShowAllEvents} />
       <PrivateRoute path='/users/list' component={IndexUser} />
       <PrivateRoute path='/users/edit/:id' component={EditUser} />
       <PrivateRoute path='/users/create' component={CreateUser} />

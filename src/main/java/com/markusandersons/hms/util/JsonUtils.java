@@ -87,6 +87,7 @@ public class JsonUtils {
         return ImmutableServerSettingsJson.builder()
             .hostname(serverSettings.getHostname())
             .serverTimezone(serverSettings.getServerTimezone())
+            .archiveAllEvents(serverSettings.isArchiveAllEvents())
             .build();
     }
 

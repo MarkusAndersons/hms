@@ -29,10 +29,12 @@ import java.time.ZoneId;
 @Service
 public class ArchivingService {
     private final ArchivingRepository archivingRepository;
+    private final SettingsService settingsService;
 
     @Autowired
-    public ArchivingService(ArchivingRepository archivingRepository) {
+    public ArchivingService(ArchivingRepository archivingRepository, SettingsService settingsService) {
         this.archivingRepository = archivingRepository;
+        this.settingsService = settingsService;
     }
 
     public void archiveEvent(
@@ -41,8 +43,13 @@ public class ArchivingService {
         @Nullable String storedData,
         @Nullable Principal principal
     ) {
+        if (!settingsService.getServerSettings().getArchiveAllEvents()) return;
         final String username = principal != null ? principal.getName() : null;
         final ArchiveEvent archiveEvent = new ArchiveEvent(requestPath, requestHttpMethod, LocalDateTime.now(ZoneId.of("UTC")), storedData, username);
         archivingRepository.save(archiveEvent);
+    }
+
+    public Iterable<ArchiveEvent> getArchiveEvents() {
+        return archivingRepository.findAllByOrderByEventTimeDesc();
     }
 }

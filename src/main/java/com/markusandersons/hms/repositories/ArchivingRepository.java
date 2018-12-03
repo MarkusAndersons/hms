@@ -19,7 +19,9 @@ package com.markusandersons.hms.repositories;
 import com.markusandersons.hms.models.ArchiveEvent;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface ArchivingRepository extends CrudRepository<ArchiveEvent, UUID> {
+    List<ArchiveEvent> findAllByOrderByEventTimeDesc();
 }
