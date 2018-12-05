@@ -16,6 +16,7 @@
 
 import React, { Component } from 'react';
 import axios from 'axios';
+import {Link} from "react-router-dom";
 import AppConstants from '../../AppConstants';
 import * as ApiTools from '../../services/ApiTools'
 import Layout from '../Layout';
@@ -92,6 +93,7 @@ class ChangePassword extends Component {
               </h3>
             </div>
             <div className="panel-body">
+              <p><Link to={AppConstants.PATH_SETTINGS}><span className="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>Back to Settings</Link></p>
               <form onSubmit={this.onSubmit}>
                 <div className="form-group">
                   <label htmlFor="username">Username:</label>

@@ -22,6 +22,29 @@
   font-size: large;
 }
 
+.main-menu {
+  padding-top: 20px;
+}
+
+.main-menu-selector {
+  color: black;
+}
+
+.main-menu-selector:hover {
+  color: #444444;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 40px;
+  line-height: 40px; /* Vertically center the text there */
+  background-color: #f5f5f5;
+  text-align: center;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

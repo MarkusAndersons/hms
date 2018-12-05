@@ -17,6 +17,8 @@
 import React, { Component } from 'react';
 import './App.css';
 import {Link} from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUsers, faMoneyBill, faChair } from '@fortawesome/free-solid-svg-icons'
 import AppConstants from './AppConstants';
 import Layout from './components/Layout';
 
@@ -25,11 +27,31 @@ class App extends Component {
     return (
       <div className="App">
         <Layout>
-          <ul>
-            <li><Link to={AppConstants.PATH_USER_INDEX}>Users</Link></li>
-            <li><Link to={AppConstants.PATH_ITEM_INDEX}>Items</Link></li>
-            <li><Link to={AppConstants.PATH_RECURRING_PAYMENT_INDEX}>Recurring Payments</Link></li>
-          </ul>
+          <div className="container">
+            <div className="row main-menu">
+              <div className="col-lg-4 col-md-6">
+                <Link to={AppConstants.PATH_USER_INDEX} className="main-menu-selector">
+                  <FontAwesomeIcon icon={faUsers} size="5x"/>
+                  <br />
+                  Users
+                </Link>
+              </div>
+              <div className="col-lg-4 col-md-6">
+                <Link to={AppConstants.PATH_ITEM_INDEX} className="main-menu-selector">
+                  <FontAwesomeIcon icon={faChair} size="5x"/>
+                  <br />
+                  Items
+                </Link>
+              </div>
+              <div className="col-lg-4 col-md-6">
+                <Link to={AppConstants.PATH_RECURRING_PAYMENT_INDEX} className="main-menu-selector">
+                  <FontAwesomeIcon icon={faMoneyBill} size="5x"/>
+                  <br />
+                  Recurring Payments
+                </Link>
+              </div>
+            </div>
+          </div>
         </Layout>
       </div>
     );

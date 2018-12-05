@@ -57,6 +57,7 @@ class ShowAllEvents extends Component {
             </div>
             <div className="panel-body">
               <p><Link to={AppConstants.PATH_SETTINGS}><span className="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>Back to Settings</Link></p>
+              <p>(Note: some interactions may not be visible if they occur while the server setting for "Archiving All Events" is not true)</p>
               <table className="table table-stripe">
                 <thead>
                   <tr>

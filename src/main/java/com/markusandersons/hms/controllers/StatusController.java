@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
@@ -37,7 +38,7 @@ public class StatusController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatusController.class);
 
-    @RequestMapping(path = "/status")
+    @RequestMapping(method = RequestMethod.GET, path = "/status")
     public StatusJson getStatus(Principal principal, @RequestHeader HttpHeaders headers) {
         LOGGER.debug("Status Requested");
         final List<String> authHeaders = headers.get("Authorization");

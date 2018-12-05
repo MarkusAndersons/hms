@@ -18,6 +18,8 @@ import React, { Component } from 'react';
 import {Link} from "react-router-dom";
 import AppConstants from '../AppConstants';
 import AuthService from '../services/AuthService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCog } from '@fortawesome/free-solid-svg-icons'
 
 class Layout extends Component {
   navLinkClass(componentIndex) {
@@ -58,13 +60,18 @@ class Layout extends Component {
                 </li>
               </ul>
               <span className="navbar-text">
-                <Link to={AppConstants.PATH_SETTINGS}>{AuthService.getUsername()}</Link>
+                <Link to={AppConstants.PATH_SETTINGS}>{AuthService.getUsername()} <FontAwesomeIcon icon={faCog} /></Link>
               </span>
             </div>
           </nav>
         </header>
         {this.displayError()}
         {this.props.children}
+        <footer className="footer">
+          <div className="container">
+            &copy; {new Date().getFullYear()} <a href="https://markusandersons.com" target="_blank" rel="noopener noreferrer">Markus Andersons</a>
+          </div>
+        </footer>
       </div>
     );
   }
