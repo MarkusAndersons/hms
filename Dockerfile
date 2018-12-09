@@ -10,4 +10,6 @@ COPY --from=frontend_builder . .
 RUN mkdir src/main/resources/static/swagger
 RUN cp assets/swagger-dist/* src/main/resources/static/swagger
 RUN mvn clean install
+
+EXPOSE 8080
 CMD ["mvn", "spring-boot:run"]
