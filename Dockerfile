@@ -3,6 +3,7 @@ ADD . .
 WORKDIR frontend
 RUN npm install
 RUN npm run build
+RUN rm -rf node_modules
 
 FROM maven:alpine
 WORKDIR /root/

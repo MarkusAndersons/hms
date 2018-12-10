@@ -28,7 +28,7 @@ This is a housemate management system.
 Why is it an over-engineered Java Spring app rather than just something like Rails? I have no idea.
 
 ## To configure
-Configure the DB by updating the `spring.datasource` values within the `application.properies` file.
+Configure the DB by updating the `DATABASE_URL` environment variable to be the connection string for the DB in the format `postgres://<username>:<password>@<host>:<port>/<dbname>`
 
 Update the value of the JWT secret in com.markusandersons.hms.auth.AuthConstants.
 
